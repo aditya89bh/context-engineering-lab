@@ -40,3 +40,36 @@ def test_run_smoke_is_reproducible(tmp_path: Path) -> None:
     main(["run-smoke", "--output", str(first), "--seeds", "5"])
     main(["run-smoke", "--output", str(second), "--seeds", "5"])
     assert first.read_text(encoding="utf-8") == second.read_text(encoding="utf-8")
+
+
+def test_run_phase2_writes_artifacts_and_summary(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    output = tmp_path / "phase2"
+    exit_code = main(["run-phase2", "--output", str(output)])
+    captured = capsys.readouterr()
+
+    assert exit_code == 0
+    assert "run_id=" in captured.out
+    summary = output / "summary.md"
+    assert summary.exists()
+    for name in (
+        "selection-baselines-easy",
+        "selection-position-bias",
+        "selection-distractor-stress",
+        "selection-budget-sweep",
+    ):
+        artifact = output / f"{name}.json"
+        assert artifact.exists()
+        assert read_result(artifact).results
+    assert "Phase 2 report" in summary.read_text(encoding="utf-8")
+
+
+def test_run_phase2_is_reproducible(tmp_path: Path) -> None:
+    first = tmp_path / "one"
+    second = tmp_path / "two"
+    main(["run-phase2", "--output", str(first)])
+    main(["run-phase2", "--output", str(second)])
+    first_summary = (first / "summary.md").read_text(encoding="utf-8")
+    second_summary = (second / "summary.md").read_text(encoding="utf-8")
+    assert first_summary == second_summary
