@@ -49,6 +49,7 @@ Implementation phases follow the [roadmap](docs/roadmap.md).
 | [Repository layout](docs/repository-layout.md) | Where things live and why |
 | [Definition of done](docs/definition-of-done.md) | The bar every experiment must clear |
 | [Harness](docs/harness.md) | The core abstractions and how a run flows |
+| [Phase 1 summary](docs/phase-1-summary.md) | What the Phase 1 harness adds and does not claim |
 | [Roadmap](docs/roadmap.md) | Phase plan and current status |
 | [ADRs](docs/adr/) | Architecture decision records |
 
