@@ -52,28 +52,33 @@ Implementation phases follow the [roadmap](docs/roadmap.md).
 | [Phase 1 summary](docs/phase-1-summary.md) | What the Phase 1 harness adds and does not claim |
 | [Selection benchmarks](docs/selection-benchmarks.md) | The Phase 2 synthetic selection benchmark and presets |
 | [Phase 2 summary](docs/phase-2-summary.md) | The first selection experiments and what they do not claim |
+| [Compression benchmarks](docs/compression-benchmarks.md) | The Phase 3 synthetic compression benchmark and presets |
+| [Phase 3 summary](docs/phase-3-summary.md) | The first compression experiments and what they do not claim |
 | [Roadmap](docs/roadmap.md) | Phase plan and current status |
 | [ADRs](docs/adr/) | Architecture decision records |
 
 ## Status
 
-**Phase 2 — Selection and Budgets.** Building on the Phase 1 harness, the lab now
-runs its first controlled experiments on *selection under budget pressure*. It
-ships six selection strategies (`first-n`, `last-n`, `recency`, `random`,
-`keyword-overlap`, and an `oracle` ceiling), a synthetic
-`selection-signal-retrieval` benchmark with three presets, four reproducible
-experiments, and a Markdown report. Results are **early and benchmark-specific**:
-they use controlled synthetic data, `oracle` is an upper bound (not deployable),
-and nothing here is a general claim about context engineering. See the
-[Phase 2 summary](docs/phase-2-summary.md) and
-[selection benchmarks](docs/selection-benchmarks.md).
+**Phase 3 — Compression.** Building on the Phase 1 harness and the Phase 2
+selection work, the lab now runs controlled experiments on *deterministic
+compression under budget pressure*. It ships six compressors (`no-compression`,
+`head-truncation`, `tail-truncation`, `keyword-preserving`, `sentence-boundary`,
+and an `oracle-compression` ceiling), a synthetic `compression-fact-preservation`
+benchmark with three presets, compression metrics, four reproducible experiments,
+and a Markdown report. There is **no LLM summarization** and no external API.
+Results are **early and benchmark-specific**: they use controlled synthetic data,
+`oracle-compression` is an upper bound (not deployable), and nothing here is a
+general claim about summarization or context engineering. See the
+[Phase 3 summary](docs/phase-3-summary.md) and
+[compression benchmarks](docs/compression-benchmarks.md).
 
 ## Running the harness
 
 ```bash
 context-lab list                                   # registered strategies/benchmarks
 context-lab run-smoke --output artifacts/smoke-result.json
-context-lab run-phase2 --output artifacts/phase2   # Phase 2 experiment suite + report
+context-lab run-phase2 --output artifacts/phase2   # Phase 2 selection suite + report
+context-lab run-phase3 --output artifacts/phase3   # Phase 3 compression suite + report
 ```
 
 ## Development

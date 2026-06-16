@@ -8,6 +8,33 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Phase 3 — Compression.**
+  - A compression interface (`core.compression`): the `Compressor` protocol,
+    `CompressionStats`/`CompressionResult`, and a `CompressorStrategy` adapter so
+    compressors run through the existing experiment runner unchanged.
+  - Six deterministic compressors: `no-compression` (over-budget reference),
+    `head-truncation`, `tail-truncation`, `keyword-preserving`,
+    `sentence-boundary`, and an `oracle-compression` ceiling (reads ground-truth
+    fact markers; documented as not deployable). No LLM summarization, no
+    external API.
+  - Fact-token markers (`benchmarks.facts`) and the
+    `compression-fact-preservation` synthetic benchmark with configurable target
+    position, distractor density, content length, and token-budget sweep.
+  - Three benchmark presets: `easy-compression`, `late-signal-compression`,
+    `dense-distractor-compression`.
+  - Compression metrics (`core.compression_metrics`): `compression_ratio`,
+    `information_retention`, `answer_support_after_compression`,
+    `distractor_retention`, and `budget_utilization`, with formulas in
+    `docs/metrics.md`.
+  - Four reproducible experiments (`compression-baselines-easy`,
+    `compression-late-signal`, `compression-distractor-density`,
+    `compression-budget-sweep`) and a Markdown report.
+  - A `context-lab run-phase3` command and a guard test ensuring no network or
+    LLM imports appear in the package modules.
+  - Documentation: `docs/compression-benchmarks.md`, `docs/phase-3-summary.md`,
+    compression metric definitions, and Phase 3 status notes on RQ4/RQ11 plus a
+    new RQ14 (extractive vs. truncation).
+
 - **Phase 2.1 — Review cleanup.**
   - Documented that `RandomSelection` is deterministic and content-addressed: its
     variation across Phase 2 seeds comes primarily from the benchmark-generated
