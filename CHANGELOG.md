@@ -8,6 +8,26 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Phase 2 — Selection and Budgets.**
+  - Five selection strategies beyond recency: `first-n`, `last-n`, deterministic
+    `random`, `keyword-overlap`, and an `oracle` ceiling (reads a privileged
+    relevance flag; documented as not deployable). A shared greedy budget-fill
+    helper backs them and now backs recency too.
+  - The `selection-signal-retrieval` synthetic benchmark generator with
+    configurable distractor load, target position, distractor similarity, item
+    lengths, and budget sweep — all deterministic from a seed.
+  - Three benchmark presets: `easy-selection`, `position-biased-selection`,
+    `high-distractor-selection`.
+  - A Phase 2 derived metric, `budget_utilization`, alongside the existing
+    selection metrics.
+  - Four reproducible experiments (`selection-baselines-easy`,
+    `selection-position-bias`, `selection-distractor-stress`,
+    `selection-budget-sweep`) as factory functions.
+  - A Markdown reporting module and a `context-lab run-phase2` command that writes
+    per-experiment JSON artifacts plus a summary report.
+  - Documentation: `docs/selection-benchmarks.md`, `docs/phase-2-summary.md`, and
+    Phase 2 status notes on RQ1/RQ2/RQ9 plus a new RQ13 (target position bias).
+
 - **Phase 1.1 — Review cleanup.**
   - Item metadata now accepts JSON-safe scalar values (`str | int | float | bool
     | None`) instead of strings only, via new `JsonValue`/`Metadata` aliases.

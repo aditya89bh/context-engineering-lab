@@ -50,22 +50,30 @@ Implementation phases follow the [roadmap](docs/roadmap.md).
 | [Definition of done](docs/definition-of-done.md) | The bar every experiment must clear |
 | [Harness](docs/harness.md) | The core abstractions and how a run flows |
 | [Phase 1 summary](docs/phase-1-summary.md) | What the Phase 1 harness adds and does not claim |
+| [Selection benchmarks](docs/selection-benchmarks.md) | The Phase 2 synthetic selection benchmark and presets |
+| [Phase 2 summary](docs/phase-2-summary.md) | The first selection experiments and what they do not claim |
 | [Roadmap](docs/roadmap.md) | Phase plan and current status |
 | [ADRs](docs/adr/) | Architecture decision records |
 
 ## Status
 
-**Phase 1 — Core Abstractions.** The package ships the experimental harness:
-items, budgets, contexts, strategies, benchmarks, a runner, result persistence,
-a registry, and a CLI, plus one trivial baseline (recency selection) and one
-harness smoke benchmark. The lab can run a reproducible experiment end to end; it
-does not yet produce research conclusions. See the [harness guide](docs/harness.md).
+**Phase 2 — Selection and Budgets.** Building on the Phase 1 harness, the lab now
+runs its first controlled experiments on *selection under budget pressure*. It
+ships six selection strategies (`first-n`, `last-n`, `recency`, `random`,
+`keyword-overlap`, and an `oracle` ceiling), a synthetic
+`selection-signal-retrieval` benchmark with three presets, four reproducible
+experiments, and a Markdown report. Results are **early and benchmark-specific**:
+they use controlled synthetic data, `oracle` is an upper bound (not deployable),
+and nothing here is a general claim about context engineering. See the
+[Phase 2 summary](docs/phase-2-summary.md) and
+[selection benchmarks](docs/selection-benchmarks.md).
 
 ## Running the harness
 
 ```bash
 context-lab list                                   # registered strategies/benchmarks
 context-lab run-smoke --output artifacts/smoke-result.json
+context-lab run-phase2 --output artifacts/phase2   # Phase 2 experiment suite + report
 ```
 
 ## Development
