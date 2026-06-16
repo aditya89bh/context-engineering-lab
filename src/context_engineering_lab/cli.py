@@ -7,6 +7,8 @@ A deliberately small CLI exposing three commands:
   result artifact.
 * ``context-lab run-phase2`` — run the Phase 2 selection experiments and write
   per-experiment JSON artifacts plus a Markdown summary.
+* ``context-lab run-phase3`` — run the Phase 3 compression experiments and write
+  per-experiment JSON artifacts plus a Markdown summary.
 
 It is a skeleton: it proves the lab can be driven from the command line and
 produce reproducible artifacts, nothing more.
@@ -16,7 +18,7 @@ from __future__ import annotations
 
 import argparse
 import logging
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from pathlib import Path
 
 from context_engineering_lab import __version__
@@ -29,14 +31,21 @@ from context_engineering_lab.core.ids import ExperimentId
 from context_engineering_lab.core.results import ExperimentResult
 from context_engineering_lab.core.runner import ExperimentRunner
 from context_engineering_lab.experiments.phase2 import phase2_experiments
+from context_engineering_lab.experiments.phase3 import phase3_experiments
 from context_engineering_lab.reporting.persistence import write_result
-from context_engineering_lab.reporting.phase2_report import render_report
+from context_engineering_lab.reporting.phase2_report import (
+    render_report as render_phase2_report,
+)
+from context_engineering_lab.reporting.phase3_report import (
+    render_report as render_phase3_report,
+)
 from context_engineering_lab.seeding import DEFAULT_SEED
 
 logger = logging.getLogger(__name__)
 
 _DEFAULT_OUTPUT = "artifacts/smoke-result.json"
 _DEFAULT_PHASE2_OUTPUT = "artifacts/phase2"
+_DEFAULT_PHASE3_OUTPUT = "artifacts/phase3"
 
 
 def _configure_logging(verbose: bool) -> None:
@@ -74,18 +83,22 @@ def _run_smoke(output: str, seeds: tuple[int, ...]) -> int:
     return 0
 
 
-def _run_phase2(output_dir: str) -> int:
+def _run_suite(
+    output_dir: str,
+    experiments: dict[str, Experiment],
+    render: Callable[[dict[str, ExperimentResult]], str],
+) -> int:
     runner = ExperimentRunner()
     destination = Path(output_dir)
     destination.mkdir(parents=True, exist_ok=True)
     results: dict[str, ExperimentResult] = {}
-    for name, experiment in phase2_experiments().items():
+    for name, experiment in experiments.items():
         result = runner.run(experiment)
         results[name] = result
         path = write_result(result, destination / f"{name}.json")
         print(f"wrote {path} (run_id={result.metadata.run_id.value})")
     summary_path = destination / "summary.md"
-    summary_path.write_text(render_report(results), encoding="utf-8")
+    summary_path.write_text(render(results), encoding="utf-8")
     print(f"wrote {summary_path}")
     return 0
 
@@ -128,6 +141,17 @@ def build_parser() -> argparse.ArgumentParser:
             f"(default: {_DEFAULT_PHASE2_OUTPUT})"
         ),
     )
+    phase3 = subparsers.add_parser(
+        "run-phase3", help="run the Phase 3 compression experiment suite"
+    )
+    phase3.add_argument(
+        "--output",
+        default=_DEFAULT_PHASE3_OUTPUT,
+        help=(
+            "directory for JSON artifacts and the Markdown summary "
+            f"(default: {_DEFAULT_PHASE3_OUTPUT})"
+        ),
+    )
     return parser
 
 
@@ -147,7 +171,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.command == "run-smoke":
         return _run_smoke(str(args.output), tuple(int(s) for s in args.seeds))
     if args.command == "run-phase2":
-        return _run_phase2(str(args.output))
+        return _run_suite(
+            str(args.output), phase2_experiments(), render_phase2_report
+        )
+    if args.command == "run-phase3":
+        return _run_suite(
+            str(args.output), phase3_experiments(), render_phase3_report
+        )
     return 2  # pragma: no cover - argparse enforces a valid command
 
 
