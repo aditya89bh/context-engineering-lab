@@ -25,7 +25,9 @@ result a careful reader can reproduce and argue with.
 - How should a fixed attention budget be allocated across competing items?
 - How robust are these strategies when the input is adversarial?
 
-A fuller statement of intent lives in the [repository thesis](docs/thesis.md).
+A fuller statement of intent lives in the [repository thesis](docs/thesis.md),
+the testable form in the [research questions](docs/research-questions.md), and the
+boundaries in the [non-goals](docs/non-goals.md).
 
 ## How this repository is organized
 
@@ -37,6 +39,8 @@ Implementation phases follow the [roadmap](docs/roadmap.md).
 | Document | Purpose |
 | --- | --- |
 | [Thesis](docs/thesis.md) | Why this lab exists and what counts as a result |
+| [Research questions](docs/research-questions.md) | The testable questions the lab pursues |
+| [Non-goals](docs/non-goals.md) | What this repository deliberately is not |
 | [Definitions](docs/definitions.md) | Shared vocabulary used across experiments |
 | [Taxonomy](docs/taxonomy.md) | The space of experiments and how they relate |
 | [Benchmarks](docs/benchmarks.md) | What we measure against and why |
