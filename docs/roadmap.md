@@ -40,13 +40,21 @@ See [harness.md](harness.md) for how these fit together.
 **Status:** complete. The lab can run a reproducible experiment end to end; it
 does not yet produce research conclusions.
 
-## Phase 2 — Selection and budgets (planned)
+## Phase 2 — Selection and budgets (complete)
 
 **Goal:** answer the first flagship questions about selection.
 
-- Salience scorers and selection strategies.
-- Synthetic benchmarks with controllable distractors and signal placement.
-- Budget-performance curves: where does cutting context break the task?
+- Selection strategies spanning lower bounds (`first-n`, `last-n`, `recency`,
+  `random`), a crude content signal (`keyword-overlap`), and an `oracle` ceiling.
+- The synthetic `selection-signal-retrieval` benchmark with controllable
+  distractor load, target position, and distractor similarity; three presets.
+- Budget-performance curves and a Markdown report via `context-lab run-phase2`.
+
+See [phase-2-summary.md](phase-2-summary.md) and
+[selection-benchmarks.md](selection-benchmarks.md).
+
+**Status:** complete. Produces controlled, benchmark-specific observations only —
+not general claims; `oracle` is an upper bound, not a deployable strategy.
 
 ## Phase 3 — Compression (planned)
 

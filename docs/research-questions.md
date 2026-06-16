@@ -20,6 +20,11 @@ observation that would count as an answer (including a clear negative result).
 - **Answer:** A signal "wins" if it yields higher task success at equal budget
   with non-overlapping uncertainty intervals. Null result: no signal beats
   recency, implying recency is a sufficient proxy here.
+- **Phase 2 status:** *begun.* On `easy-selection`, keyword overlap (a crude
+  salience proxy) reaches the oracle ceiling and clearly beats recency at tight
+  budgets; on `high-distractor-selection` that advantage disappears when
+  distractors share every signal term. So: salience can beat recency, but only
+  when content actually separates targets from distractors. Benchmark-specific.
 
 ### RQ2 — How much context can be removed before the task breaks?
 
@@ -28,6 +33,10 @@ observation that would count as an answer (including a clear negative result).
   strategy and plot the budget-performance curve.
 - **Answer:** Identify the budget at which task success drops below a pre-set
   threshold (the "cliff"), or show the curve degrades smoothly with no cliff.
+- **Phase 2 status:** *begun.* The `selection-budget-sweep` experiment plots
+  answer support against an item-budget ladder on `high-distractor-selection`.
+  For the non-oracle strategies the curve rises smoothly with the budget (no
+  sharp cliff on this benchmark), while the oracle stays flat at the ceiling.
 
 ### RQ3 — Does diversity-aware selection beat pure top-k under redundancy?
 
@@ -93,6 +102,11 @@ observation that would count as an answer (including a clear negative result).
 - **Answer:** Rank strategies by distractor sensitivity (the slope of quality
   loss vs. distractor fraction); identify which resist capture by surface
   similarity.
+- **Phase 2 status:** *begun.* Comparing `easy-selection` (few, dissimilar
+  distractors) with `high-distractor-selection` (many, look-alike distractors)
+  shows precision and recall for every non-oracle strategy collapsing toward
+  chance under heavy, content-similar distractor load. A first, coarse reading
+  of distractor sensitivity on synthetic data.
 
 ### RQ10 — How much store poisoning can a strategy tolerate?
 
@@ -117,6 +131,21 @@ observation that would count as an answer (including a clear negative result).
   shifted one (different distractor style, length, or drift rate).
 - **Answer:** Report shift tolerance (retained advantage post-shift). A strategy
   that only wins in-distribution is documented as overfit to its tuning regime.
+
+### RQ13 — Does target position bias position-blind baselines?
+
+- **Taxonomy:** Robustness × Mechanism
+- **Test:** Hold the target and distractors fixed but vary where the target sits
+  among the candidates (early / middle / late / random); measure task success
+  per strategy, separating order-only baselines from content-based ones.
+- **Answer:** A baseline is *position-biased* if its success depends on target
+  placement rather than relevance. Report which strategies succeed or fail purely
+  as a function of position.
+- **Phase 2 status:** *begun.* On `position-biased-selection` (target always
+  late) `first-n` fails at small budgets while `last-n` and `recency` succeed —
+  by position, not by reading content. This confirms order-only baselines can be
+  right for the wrong reason and must be read as position probes, not relevance
+  selectors.
 
 ---
 
