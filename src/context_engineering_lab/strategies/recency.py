@@ -10,11 +10,12 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 
-from context_engineering_lab.core.budget import Budget, item_cost
+from context_engineering_lab.core.budget import Budget
 from context_engineering_lab.core.context import Context
 from context_engineering_lab.core.ids import StrategyId
 from context_engineering_lab.core.item import Item
 from context_engineering_lab.core.task import Task
+from context_engineering_lab.strategies._budget_fill import fill_within_budget
 
 _OLDEST = float("-inf")
 
@@ -49,11 +50,4 @@ class RecencySelection:
             key=lambda item: item.timestamp if item.timestamp is not None else _OLDEST,
             reverse=True,
         )
-        chosen: list[Item] = []
-        used = 0
-        for item in ordered:
-            cost = item_cost(item, budget.unit)
-            if budget.admits(used, cost):
-                chosen.append(item)
-                used += cost
-        return Context(items=tuple(chosen), budget=budget)
+        return fill_within_budget(ordered, budget)
