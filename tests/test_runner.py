@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 
+import pytest
+
 from context_engineering_lab.core.benchmark import Case
 from context_engineering_lab.core.budget import Budget, BudgetUnit, item_cost
 from context_engineering_lab.core.context import Context
@@ -94,6 +96,55 @@ def test_runner_produces_results_across_budgets() -> None:
     assert {m.name for m in metrics} == {"answer_support"}
     # The target is first, so even a budget of 1 supports the answer.
     assert all(m.value == 1.0 for m in metrics)
+
+
+class MissingMetricBenchmark(TwoItemBenchmark):
+    """Declares two metrics but only returns one."""
+
+    @property
+    def declared_metrics(self) -> tuple[str, ...]:
+        return ("answer_support", "selection_recall")
+
+    def evaluate(self, case: Case, context: Context) -> Mapping[str, float]:
+        return {"answer_support": answer_support(case.required_ids, context.item_ids)}
+
+
+class ExtraMetricBenchmark(TwoItemBenchmark):
+    """Returns a metric it never declared."""
+
+    def evaluate(self, case: Case, context: Context) -> Mapping[str, float]:
+        return {
+            "answer_support": answer_support(case.required_ids, context.item_ids),
+            "undeclared": 1.0,
+        }
+
+
+def test_runner_rejects_missing_declared_metric() -> None:
+    experiment = Experiment(
+        experiment_id=ExperimentId("exp"),
+        benchmark=MissingMetricBenchmark(),
+        strategies=(FirstNStrategy(),),
+        seeds=(1,),
+    )
+    with pytest.raises(ValueError) as info:
+        ExperimentRunner().run(experiment)
+    message = str(info.value)
+    assert "two-item" in message
+    assert "c0" in message
+    assert "selection_recall" in message
+
+
+def test_runner_rejects_extra_undeclared_metric() -> None:
+    experiment = Experiment(
+        experiment_id=ExperimentId("exp"),
+        benchmark=ExtraMetricBenchmark(),
+        strategies=(FirstNStrategy(),),
+        seeds=(1,),
+    )
+    with pytest.raises(ValueError) as info:
+        ExperimentRunner().run(experiment)
+    message = str(info.value)
+    assert "undeclared" in message
 
 
 def test_runner_metadata_is_deterministic() -> None:
