@@ -8,6 +8,21 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Phase 1.1 — Review cleanup.**
+  - Item metadata now accepts JSON-safe scalar values (`str | int | float | bool
+    | None`) instead of strings only, via new `JsonValue`/`Metadata` aliases.
+  - The runner validates that each `evaluate` call returns exactly the
+    benchmark's `declared_metrics`, raising a `ValueError` that names the
+    benchmark id, case id, and any missing/extra metrics.
+  - Documented the empty-selection precision convention (undefined formally; the
+    smoke benchmark records `0.0` for harness convenience).
+  - Added `docs/phase-1-summary.md`.
+
+### Changed
+
+- Hardened result reproducibility expectations around declared metrics (see
+  above); no behavior change for conforming benchmarks.
+
 - **Phase 1 — Core abstractions.**
   - Typed primitives: `Item`/`ItemId`, `Budget`/`BudgetUnit`, `Context`, `Task`,
     and identifier wrappers for strategies, benchmarks, experiments, and runs.
