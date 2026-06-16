@@ -8,10 +8,10 @@ token-style budgeting, an optional timestamp for temporal strategies, and free
 
 from __future__ import annotations
 
-from collections.abc import Mapping
 from dataclasses import dataclass, field
 
 from context_engineering_lab.core.ids import ItemId
+from context_engineering_lab.core.json_types import Metadata
 
 
 @dataclass(frozen=True, slots=True)
@@ -25,7 +25,8 @@ class Item:
         timestamp: Optional creation/access time as a POSIX-style float. Used by
             temporal strategies; ``None`` means "no temporal information".
         source: Optional provenance label.
-        metadata: Optional read-only key/value metadata.
+        metadata: Optional read-only metadata mapping keys to JSON-safe scalar
+            values (str, int, float, bool, or None).
     """
 
     id: ItemId
@@ -33,7 +34,7 @@ class Item:
     length: int = 0
     timestamp: float | None = None
     source: str | None = None
-    metadata: Mapping[str, str] = field(default_factory=dict)
+    metadata: Metadata = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         if self.length < 0:
