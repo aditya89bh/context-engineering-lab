@@ -64,6 +64,22 @@ These are recorded in full as ADRs:
 - **Reproducibility via explicit seeding** ([ADR-0003](adr/0003-deterministic-seeding.md)).
   Single root seed, deterministic sub-seed derivation, no hidden randomness.
 
+## Deferred: a strategy run context
+
+**Design note (deferred — do not build yet).** The current strategy interface is
+`select(candidates, task, budget) -> Context`. It intentionally does *not* pass
+the run's `seed`, `run_id`, `benchmark_id`, or `case_id` to the strategy. A
+future interface may introduce a `RunContext` / `StrategyContext` value carrying
+those fields, so that, for example, a randomized strategy could seed itself from
+the experiment seed rather than content-addressing its own randomness from the
+candidate ids (see the `random` determinism note in
+[phase-2-summary.md](phase-2-summary.md)).
+
+This is **deliberately deferred** to avoid overbuilding Phase 2. Adding a context
+object now would widen the most-implemented interface in the package for a single
+present consumer. It should be introduced only when a concrete strategy genuinely
+needs run-scoped identity or seeding — at which point it warrants its own ADR.
+
 ## Reproducibility model
 
 Every run is defined by `(experiment config, root seed, code version)`. The

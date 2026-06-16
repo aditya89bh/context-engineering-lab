@@ -8,6 +8,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Phase 2.1 — Review cleanup.**
+  - Documented that `RandomSelection` is deterministic and content-addressed: its
+    variation across Phase 2 seeds comes primarily from the benchmark-generated
+    candidate sets, not from the experiment seed reaching the strategy.
+  - Added a deferred design note in `docs/architecture.md` on a possible future
+    `RunContext`/`StrategyContext` (carrying seed, run id, benchmark id, case id),
+    intentionally not built in Phase 2 to avoid overbuilding.
+
 - **Phase 2 — Selection and Budgets.**
   - Five selection strategies beyond recency: `first-n`, `last-n`, deterministic
     `random`, `keyword-overlap`, and an `oracle` ceiling (reads a privileged

@@ -32,6 +32,24 @@ deployable systems:
 - **Upper bound:** `oracle`, which reads ground-truth relevance and is **not
   deployable**. It measures how much headroom remains, nothing more.
 
+### Note on `random` determinism
+
+`RandomSelection` is deterministic and *content-addressed*: it does not receive
+the experiment seed directly. The current `Strategy.select(candidates, task,
+budget)` interface carries no seed, run id, or case id, so the strategy derives
+its per-call seed from its own base seed combined with the ids of the candidates
+it is given. Two calls with the same candidate set therefore always produce the
+same selection.
+
+This means the variation in `random` results across Phase 2 seeds comes
+*primarily from the benchmark*: different experiment seeds make the generator
+emit different candidate sets (different distractor content and target
+placement), and the strategy's content-addressed seed changes with them. It is
+not the experiment seed flowing into the strategy. The behaviour is fully
+reproducible, but the source of its randomness is the generated data, not a seed
+handed to the strategy. See the deferred `StrategyContext` note in
+[architecture.md](architecture.md).
+
 ## Observations (these benchmarks only)
 
 Run `context-lab run-phase2` to regenerate the tables. The headline patterns,
