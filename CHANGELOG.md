@@ -8,6 +8,19 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Phase 0.1 — Review cleanup.**
+  - Research-question catalog (`docs/research-questions.md`) with testable
+    questions mapped to the taxonomy.
+  - Explicit non-goals (`docs/non-goals.md`).
+  - Formal metric definitions and formulas in `docs/metrics.md` (selection
+    precision/recall, answer support, budget efficiency, distractor and
+    poisoning sensitivity, and AUBPC).
+  - README links to the research questions and non-goals.
+
+### Changed
+
+- Marked Phase 0 as complete in the roadmap.
+
 - **Phase 0 — Research design.**
   - Repository thesis, shared definitions, and experiment taxonomy.
   - Benchmark philosophy and metrics framework.
