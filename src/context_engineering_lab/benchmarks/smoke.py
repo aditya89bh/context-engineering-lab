@@ -100,6 +100,13 @@ class SmokeBenchmark:
     def evaluate(self, case: Case, context: Context) -> Mapping[str, float]:
         """Score a context for a single case.
 
+        Empty-selection convention: the formal
+        :func:`~context_engineering_lab.core.metrics.selection_precision` treats
+        an empty selection as *undefined* and raises. For harness convenience
+        this benchmark records precision as ``0.0`` when nothing is selected, so
+        a run never crashes on a degenerate (tiny-budget) selection. This is a
+        reporting convenience, not a claim about precision at zero selection.
+
         Args:
             case: The case that produced the context.
             context: The strategy's output for the case.
