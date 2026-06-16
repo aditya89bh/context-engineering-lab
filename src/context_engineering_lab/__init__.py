@@ -12,6 +12,19 @@ experimental machinery is introduced in later phases as described in
 
 from __future__ import annotations
 
-__all__ = ["__version__"]
+from context_engineering_lab.seeding import (
+    DEFAULT_SEED,
+    derive_seed,
+    seed_everything,
+    temporary_seed,
+)
+
+__all__ = [
+    "DEFAULT_SEED",
+    "__version__",
+    "derive_seed",
+    "seed_everything",
+    "temporary_seed",
+]
 
 __version__ = "0.0.0"
