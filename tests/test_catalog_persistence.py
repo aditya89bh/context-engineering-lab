@@ -17,8 +17,20 @@ from context_engineering_lab.reporting.persistence import read_result, write_res
 def test_catalog_contains_builtins() -> None:
     strategies = build_strategy_registry()
     benchmarks = build_benchmark_registry()
-    assert "recency" in strategies
-    assert "harness-smoke" in benchmarks
+    assert {
+        "first-n",
+        "last-n",
+        "recency",
+        "random",
+        "keyword-overlap",
+        "oracle",
+    } <= set(strategies.names())
+    assert {
+        "harness-smoke",
+        "easy-selection",
+        "position-biased-selection",
+        "high-distractor-selection",
+    } <= set(benchmarks.names())
 
 
 def test_result_persistence_round_trip(tmp_path: Path) -> None:
