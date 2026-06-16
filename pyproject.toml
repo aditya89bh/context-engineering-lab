@@ -64,6 +64,8 @@ select = [
     "D",   # pydocstyle
 ]
 ignore = [
+    "D105", # missing docstring in magic method (dunders are self-explanatory)
+    "D107", # missing docstring in __init__ (documented at class level)
     "D203", # one-blank-line-before-class (conflicts with D211)
     "D213", # multi-line-summary-second-line (conflicts with D212)
 ]
