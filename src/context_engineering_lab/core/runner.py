@@ -15,7 +15,6 @@ import logging
 from collections import defaultdict
 from statistics import mean, pstdev
 
-from context_engineering_lab import __version__
 from context_engineering_lab.core.experiment import Experiment
 from context_engineering_lab.core.metadata import build_run_metadata
 from context_engineering_lab.core.results import (
@@ -39,6 +38,10 @@ class ExperimentRunner:
         Returns:
             The aggregated results across every strategy, seed, and budget.
         """
+        # Imported lazily to avoid a package-init import cycle (the package
+        # ``__init__`` re-exports the runner).
+        from context_engineering_lab import __version__
+
         benchmark = experiment.benchmark
         budgets = experiment.resolved_budgets()
         strategy_ids = tuple(str(s.id) for s in experiment.strategies)
