@@ -56,13 +56,27 @@ See [phase-2-summary.md](phase-2-summary.md) and
 **Status:** complete. Produces controlled, benchmark-specific observations only —
 not general claims; `oracle` is an upper bound, not a deployable strategy.
 
-## Phase 3 — Compression (planned)
+## Phase 3 — Compression (complete)
 
 **Goal:** map the safe limits of compression.
 
-- Extractive and abstractive compression strategies.
-- Information-retention metrics against uncompressed references.
-- The compression-quality frontier.
+- Deterministic, extractive compression strategies spanning a no-compression
+  reference, head/tail truncation, query-aware keyword preservation,
+  sentence-boundary extraction, and an `oracle-compression` ceiling. No LLM
+  summarization.
+- The synthetic `compression-fact-preservation` benchmark with three presets, and
+  compression metrics (ratio, information retention, answer support after
+  compression, distractor retention, budget utilization).
+- Budget-performance / compression-quality tables and a Markdown report via
+  `context-lab run-phase3`.
+
+See [phase-3-summary.md](phase-3-summary.md) and
+[compression-benchmarks.md](compression-benchmarks.md).
+
+**Status:** complete. Produces controlled, benchmark-specific observations only —
+not general claims about compression or summarization; `oracle-compression` is an
+upper bound, not deployable. Abstractive/LLM compression is intentionally out of
+scope.
 
 ## Phase 4 — Temporal context and forgetting (planned)
 

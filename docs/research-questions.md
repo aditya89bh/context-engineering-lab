@@ -56,6 +56,12 @@ observation that would count as an answer (including a clear negative result).
   reference and downstream task success.
 - **Answer:** Locate the compression ratio at which retention or task success
   begins to fall, yielding a compression-quality frontier per method.
+- **Phase 3 status:** *begun (deterministic compression only).* On
+  `compression-fact-preservation`, extractive compressors hold required facts
+  down to small token budgets while position-blind truncation drops them once the
+  kept end no longer covers the facts. The `compression-budget-sweep` experiment
+  traces retention against budget; the oracle holds full retention at a low
+  compression ratio. No abstractive/LLM compression is included.
 
 ### RQ5 — Is recency a causal proxy for relevance, or merely correlated?
 
@@ -123,6 +129,11 @@ observation that would count as an answer (including a clear negative result).
   sensitivity with and without a compression stage.
 - **Answer:** Determine whether compression launders distractors into summaries
   (worse robustness) or filters them out (better robustness).
+- **Phase 3 status:** *begun.* On `dense-distractor-compression`, deterministic
+  truncation and keyword-preserving compression retain a sizeable share of
+  distractor facts (laundering them into the output), whereas the oracle drops
+  them entirely. A first, extractive-only reading; abstractive compression is out
+  of scope for Phase 3.
 
 ### RQ12 — Do gains from a strategy survive distribution shift?
 
@@ -146,6 +157,21 @@ observation that would count as an answer (including a clear negative result).
   by position, not by reading content. This confirms order-only baselines can be
   right for the wrong reason and must be read as position probes, not relevance
   selectors.
+
+### RQ14 — Do extractive compressors preserve facts better than truncation?
+
+- **Taxonomy:** Compression × Comparison
+- **Test:** On documents with known facts, compare position-based truncation
+  (head/tail) against extractive compressors (query-aware keyword preservation,
+  sentence-boundary) at matched token budgets; measure information retention and
+  answer support after compression.
+- **Answer:** An extractive compressor "wins" if it retains more required facts at
+  equal budget, especially when the facts are not at the kept end. Null result:
+  truncation matches extraction once position is controlled.
+- **Phase 3 status:** *begun.* On `compression-fact-preservation`,
+  `keyword-preserving` holds the required facts across budgets while head/tail
+  truncation only succeed when the facts sit at the kept end; the advantage is
+  clearest on `late-signal-compression`. Deterministic, extractive only.
 
 ---
 
