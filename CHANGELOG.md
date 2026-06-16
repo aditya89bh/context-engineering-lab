@@ -8,6 +8,19 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Phase 1 — Core abstractions.**
+  - Typed primitives: `Item`/`ItemId`, `Budget`/`BudgetUnit`, `Context`, `Task`,
+    and identifier wrappers for strategies, benchmarks, experiments, and runs.
+  - The `Strategy` and `Benchmark` interfaces (protocols) plus a `Case` model.
+  - Selection metric functions (precision, recall, answer support).
+  - Result models (`MetricValue`, `StrategyRunResult`, `ExperimentResult`) with
+    JSON serialization and deterministic `RunMetadata`/`RunId`.
+  - A synchronous `ExperimentRunner` and an `Experiment` configuration model.
+  - A typed `Registry` and a built-in catalog.
+  - One trivial baseline (recency selection) and one harness smoke benchmark.
+  - A `context-lab` CLI (`list`, `run-smoke`) and JSON result persistence.
+  - Harness documentation (`docs/harness.md`).
+
 - **Phase 0.1 — Review cleanup.**
   - Research-question catalog (`docs/research-questions.md`) with testable
     questions mapped to the taxonomy.
