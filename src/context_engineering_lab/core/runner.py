@@ -13,6 +13,8 @@ from __future__ import annotations
 
 import logging
 from collections import defaultdict
+from collections.abc import Mapping
+from collections.abc import Set as AbstractSet
 from statistics import mean, pstdev
 
 from context_engineering_lab.core.experiment import Experiment
@@ -24,6 +26,36 @@ from context_engineering_lab.core.results import (
 )
 
 logger = logging.getLogger(__name__)
+
+
+def _validate_evaluation(
+    benchmark_id: str,
+    case_id: str,
+    declared: AbstractSet[str],
+    returned: Mapping[str, float],
+) -> None:
+    """Ensure an evaluation returned exactly the declared metric names.
+
+    Args:
+        benchmark_id: The benchmark whose evaluation is being checked.
+        case_id: The case the evaluation came from.
+        declared: The benchmark's declared metric names.
+        returned: The metric mapping returned by ``evaluate``.
+
+    Raises:
+        ValueError: If the returned names are missing any declared metric or
+            include any undeclared (extra) metric.
+    """
+    returned_names = frozenset(returned)
+    if returned_names == declared:
+        return
+    missing = sorted(declared - returned_names)
+    extra = sorted(returned_names - declared)
+    raise ValueError(
+        "benchmark "
+        f"{benchmark_id!r} returned metrics that do not match its declared "
+        f"metrics for case {case_id!r}: missing={missing}, extra={extra}"
+    )
 
 
 class ExperimentRunner:
@@ -45,6 +77,7 @@ class ExperimentRunner:
         benchmark = experiment.benchmark
         budgets = experiment.resolved_budgets()
         strategy_ids = tuple(str(s.id) for s in experiment.strategies)
+        declared_metrics = frozenset(benchmark.declared_metrics)
 
         logger.info(
             "experiment_start experiment=%s benchmark=%s version=%s "
@@ -66,7 +99,14 @@ class ExperimentRunner:
                     per_metric: dict[str, list[float]] = defaultdict(list)
                     for case in cases:
                         context = strategy.select(case.candidates, case.task, budget)
-                        for name, value in benchmark.evaluate(case, context).items():
+                        scores = benchmark.evaluate(case, context)
+                        _validate_evaluation(
+                            str(benchmark.id),
+                            case.case_id,
+                            declared_metrics,
+                            scores,
+                        )
+                        for name, value in scores.items():
                             per_metric[name].append(value)
                     for name, values in per_metric.items():
                         metric_values.append(
