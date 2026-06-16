@@ -8,7 +8,7 @@ The roadmap describes *direction*, not a contract. Later phases may be reordered
 or revised based on what earlier phases reveal — that is the point of doing this
 empirically.
 
-## Phase 0 — Research design (current)
+## Phase 0 — Research design (complete)
 
 **Goal:** establish the intellectual and engineering foundation.
 
@@ -19,7 +19,10 @@ empirically.
 - Contribution guidelines, definition of done, and this roadmap.
 - Working toolchain: Ruff, MyPy (strict), pytest, build, CI.
 
-**Status:** in progress.
+A follow-up review pass (Phase 0.1) added the research-question catalog,
+explicit non-goals, and formal metric definitions.
+
+**Status:** complete.
 
 ## Phase 1 — Core abstractions (planned)
 
