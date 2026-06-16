@@ -37,6 +37,9 @@ dev = [
     "build>=1.2",
 ]
 
+[project.scripts]
+context-lab = "context_engineering_lab.cli:main"
+
 [project.urls]
 Homepage = "https://github.com/aditya89bh/context-engineering-lab"
 Repository = "https://github.com/aditya89bh/context-engineering-lab"
