@@ -24,14 +24,21 @@ explicit non-goals, and formal metric definitions.
 
 **Status:** complete.
 
-## Phase 1 — Core abstractions (planned)
+## Phase 1 — Core abstractions (complete)
 
-**Goal:** turn the design into interfaces.
+**Goal:** turn the design into typed, testable infrastructure.
 
-- Item, store, and budget primitives.
-- The experiment protocol and the harness that runs it.
-- Result and metric data structures with serialization.
-- The first trivial baselines (e.g. recency selection) to exercise the harness.
+- Item, budget, context, and task primitives.
+- The strategy and benchmark interfaces, plus the experiment runner.
+- Result and metric data structures with JSON serialization and deterministic
+  run metadata.
+- A registry, one trivial baseline (recency selection), one harness smoke
+  benchmark, and a CLI skeleton.
+
+See [harness.md](harness.md) for how these fit together.
+
+**Status:** complete. The lab can run a reproducible experiment end to end; it
+does not yet produce research conclusions.
 
 ## Phase 2 — Selection and budgets (planned)
 

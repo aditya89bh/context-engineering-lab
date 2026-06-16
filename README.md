@@ -48,14 +48,24 @@ Implementation phases follow the [roadmap](docs/roadmap.md).
 | [Architecture](docs/architecture.md) | System design and key decisions |
 | [Repository layout](docs/repository-layout.md) | Where things live and why |
 | [Definition of done](docs/definition-of-done.md) | The bar every experiment must clear |
+| [Harness](docs/harness.md) | The core abstractions and how a run flows |
 | [Roadmap](docs/roadmap.md) | Phase plan and current status |
 | [ADRs](docs/adr/) | Architecture decision records |
 
 ## Status
 
-**Phase 0 — Research Design.** The package currently ships only the
-reproducibility foundations (deterministic seeding). Experimental machinery is
-introduced in later phases.
+**Phase 1 — Core Abstractions.** The package ships the experimental harness:
+items, budgets, contexts, strategies, benchmarks, a runner, result persistence,
+a registry, and a CLI, plus one trivial baseline (recency selection) and one
+harness smoke benchmark. The lab can run a reproducible experiment end to end; it
+does not yet produce research conclusions. See the [harness guide](docs/harness.md).
+
+## Running the harness
+
+```bash
+context-lab list                                   # registered strategies/benchmarks
+context-lab run-smoke --output artifacts/smoke-result.json
+```
 
 ## Development
 
