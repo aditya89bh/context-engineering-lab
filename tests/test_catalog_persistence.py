@@ -6,6 +6,7 @@ from pathlib import Path
 
 from context_engineering_lab.catalog import (
     build_benchmark_registry,
+    build_compressor_registry,
     build_strategy_registry,
 )
 from context_engineering_lab.core.experiment import Experiment
@@ -30,7 +31,22 @@ def test_catalog_contains_builtins() -> None:
         "easy-selection",
         "position-biased-selection",
         "high-distractor-selection",
+        "easy-compression",
+        "late-signal-compression",
+        "dense-distractor-compression",
     } <= set(benchmarks.names())
+
+
+def test_compressor_registry_contains_builtins() -> None:
+    compressors = build_compressor_registry()
+    assert {
+        "no-compression",
+        "head-truncation",
+        "tail-truncation",
+        "keyword-preserving",
+        "sentence-boundary",
+        "oracle-compression",
+    } <= set(compressors.names())
 
 
 def test_result_persistence_round_trip(tmp_path: Path) -> None:

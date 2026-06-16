@@ -7,9 +7,14 @@ discovery) so the available entries are easy to reason about.
 
 from __future__ import annotations
 
+from context_engineering_lab.benchmarks.compression_presets import (
+    all_compression_presets,
+)
 from context_engineering_lab.benchmarks.selection_presets import all_selection_presets
 from context_engineering_lab.benchmarks.smoke import SmokeBenchmark
+from context_engineering_lab.compression import default_compressors
 from context_engineering_lab.core.benchmark import Benchmark
+from context_engineering_lab.core.compression import Compressor
 from context_engineering_lab.core.registry import Registry
 from context_engineering_lab.core.strategy import Strategy
 from context_engineering_lab.strategies.keyword_overlap import KeywordOverlapSelection
@@ -41,7 +46,19 @@ def build_strategy_registry() -> Registry[Strategy]:
 def build_benchmark_registry() -> Registry[Benchmark]:
     """Return a registry populated with the built-in benchmarks."""
     registry: Registry[Benchmark] = Registry("benchmark")
-    benchmarks: tuple[Benchmark, ...] = (SmokeBenchmark(), *all_selection_presets())
+    benchmarks: tuple[Benchmark, ...] = (
+        SmokeBenchmark(),
+        *all_selection_presets(),
+        *all_compression_presets(),
+    )
     for benchmark in benchmarks:
         registry.register(str(benchmark.id), benchmark)
+    return registry
+
+
+def build_compressor_registry() -> Registry[Compressor]:
+    """Return a registry populated with the built-in compressors."""
+    registry: Registry[Compressor] = Registry("compressor")
+    for compressor in default_compressors():
+        registry.register(str(compressor.id), compressor)
     return registry
