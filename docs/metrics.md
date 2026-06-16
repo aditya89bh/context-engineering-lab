@@ -153,6 +153,60 @@ Higher AUBPC means better quality sustained across budgets. Because it can hide 
 cliff, always report AUBPC *alongside* the curve and the location of any cliff,
 never as a replacement for them.
 
+### Compression metrics (Phase 3)
+
+Compression transforms item *content* to reduce its cost while preserving
+task-relevant information. The Phase 3 compression benchmark embeds ground-truth
+**facts** in content as tokens (see `benchmarks/facts.py`), so fidelity is scored
+by which facts survive. For a single case, let:
+
+- `L_o` = original content length (tokens); `L_c` = compressed content length.
+- `T` = the set of target facts in the original (required ∪ optional).
+- `R_f ⊆ T` = the required facts (the minimal set needed to answer).
+- `D_f` = the set of distractor facts in the original.
+- `K` = the set of facts present after compression (the retained facts).
+- `U` = the cost actually used by the produced context; `B` = the budget limit.
+
+**Compression ratio** — compressed size relative to the original. Lower is more
+aggressive; `1.0` means no reduction.
+
+```
+compression_ratio = L_c / L_o                (defined when L_o > 0)
+```
+
+**Information retention** — fraction of target facts that survive compression.
+
+```
+information_retention = |T ∩ K| / |T|        (defined when |T| > 0)
+```
+
+**Answer support after compression** — whether *all* required facts survived. A
+stricter, task-facing companion to retention.
+
+```
+answer_support_after_compression = 1 if R_f ⊆ K else 0   (defined when |R_f| > 0)
+```
+
+**Distractor retention** — fraction of distractor facts that survive. Lower is
+better: a good compressor discards distractors rather than laundering them into
+the output.
+
+```
+distractor_retention = |D_f ∩ K| / |D_f|     (defined when |D_f| > 0)
+```
+
+**Budget utilization** — fraction of the budget consumed. May exceed `1.0` for a
+strategy that does not honor the budget (e.g. the no-compression baseline).
+
+```
+budget_utilization = U / B                   (defined when B > 0)
+```
+
+These are deliberately *not* combined into a composite score. A compressor is
+described by where it sits across retention, ratio, distractor retention, and
+utilization — for example, the oracle ceiling attains full retention at a very
+low ratio because it keeps only the target facts.
+
 ## Reporting conventions
 
 **Curves over points.** Where a budget is involved, report the
