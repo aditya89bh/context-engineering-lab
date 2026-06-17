@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from context_engineering_lab.catalog import (
+    build_attention_allocator_registry,
     build_benchmark_registry,
     build_compressor_registry,
     build_retention_policy_registry,
@@ -46,6 +47,9 @@ def test_catalog_contains_builtins() -> None:
         "low-noise-retention",
         "stale-accumulation",
         "harmful-memory",
+        "balanced-sources",
+        "concentrated-signal",
+        "noisy-dominant-source",
     } <= set(benchmarks.names())
 
 
@@ -71,6 +75,18 @@ def test_retention_policy_registry_contains_builtins() -> None:
         "hybrid-retention-0.5-0.3-0.2",
         "oracle-retention",
     } <= set(policies.names())
+
+
+def test_attention_allocator_registry_contains_builtins() -> None:
+    allocators = build_attention_allocator_registry()
+    assert {
+        "uniform-allocation",
+        "proportional-allocation",
+        "salience-allocation",
+        "adaptive-allocation",
+        "winner-take-most-0.7",
+        "oracle-allocation",
+    } <= set(allocators.names())
 
 
 def test_result_persistence_round_trip(tmp_path: Path) -> None:

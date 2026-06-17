@@ -1,9 +1,10 @@
 """Guard test: the lab code uses no network or LLM dependencies.
 
-Compression (Phase 3), temporal (Phase 4), and retention (Phase 5) work must be
-deterministic and local. This test scans the source modules for imports of
-networking or LLM client libraries, failing if any appear. It is a coarse guard,
-not a sandbox, but it catches accidental introduction of an external dependency.
+Compression (Phase 3), temporal (Phase 4), retention (Phase 5), and attention
+(Phase 6) work must be deterministic and local. This test scans the source
+modules for imports of networking or LLM client libraries, failing if any appear.
+It is a coarse guard, not a sandbox, but it catches accidental introduction of an
+external dependency.
 """
 
 from __future__ import annotations
@@ -17,6 +18,7 @@ _PACKAGE_ROOT = Path(context_engineering_lab.__file__).parent
 _SCANNED_DIRS = (
     _PACKAGE_ROOT / "compression",
     _PACKAGE_ROOT / "retention",
+    _PACKAGE_ROOT / "attention",
     _PACKAGE_ROOT / "benchmarks",
     _PACKAGE_ROOT / "experiments",
     _PACKAGE_ROOT / "reporting",
@@ -75,3 +77,10 @@ def test_guard_covers_the_retention_modules() -> None:
     assert "retention.py" in names  # retention interface and benchmark
     assert "retention_metrics.py" in names
     assert "hybrid.py" in names  # a retention policy
+
+
+def test_guard_covers_the_attention_modules() -> None:
+    names = {path.name for path in _python_files()}
+    assert "attention.py" in names  # attention interface and benchmark
+    assert "attention_metrics.py" in names
+    assert "adaptive.py" in names  # an allocator
