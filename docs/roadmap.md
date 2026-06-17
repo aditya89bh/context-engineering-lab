@@ -78,22 +78,44 @@ not general claims about compression or summarization; `oracle-compression` is a
 upper bound, not deployable. Abstractive/LLM compression is intentionally out of
 scope.
 
-## Phase 4 — Temporal context and forgetting (planned)
+## Phase 4 — Temporal context (complete)
 
-**Goal:** study how time should shape context.
+**Goal:** study how time should shape what context survives a budget.
 
-- Temporal decay and staleness detection.
+- Temporal strategies spanning `recency` (reused), `oldest-first`, sliding and
+  fixed windows, an age-aware weighting of an observable salience signal, and an
+  `oracle-temporal` ceiling.
+- The synthetic `temporal-context-relevance` benchmark with three presets
+  (`recent-signal`, `old-signal`, `drift-heavy`) and temporal metrics
+  (temporal relevance, stale selection rate, age of selected context, relevant
+  age gap).
+- Budget-performance and temporal-metric tables and a Markdown report via
+  `context-lab run-phase4`.
+
+See [phase-4-summary.md](phase-4-summary.md) and
+[temporal-benchmarks.md](temporal-benchmarks.md).
+
+**Status:** complete. Studies temporal *effects* only — no forgetting, eviction,
+or retention policy. Produces controlled, benchmark-specific observations only —
+not general claims about temporal reasoning; `oracle-temporal` is an upper bound,
+not deployable.
+
+## Phase 5 — Forgetting and retention (planned)
+
+**Goal:** study whether discarding helps, now that temporal effects are mapped.
+
 - Forgetting and eviction policies under capacity limits.
+- Temporal decay shapes matched to a known drift process.
 - Whether active forgetting beats keeping everything.
 
-## Phase 5 — Attention budget allocation (planned)
+## Phase 6 — Attention budget allocation (planned)
 
 **Goal:** study how a fixed budget should be split.
 
 - Uniform vs. salience-proportional vs. knapsack allocation.
 - Interaction between allocation and selection.
 
-## Phase 6 — Robustness (planned)
+## Phase 7 — Robustness (planned)
 
 **Goal:** stress strategies that work under benign conditions.
 

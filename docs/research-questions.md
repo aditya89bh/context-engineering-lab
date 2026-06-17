@@ -72,6 +72,12 @@ observation that would count as an answer (including a clear negative result).
 - **Answer:** If decay still helps once age and relevance are decorrelated,
   recency carries independent signal; if its advantage vanishes, recency was
   only a correlate of relevance.
+- **Phase 4 status:** *begun.* On `temporal-context-relevance`, varying
+  `relevant_age` decorrelates age from relevance: when the signal is recent,
+  recency tracks the oracle; when it is old (`old-signal`), recency fails and
+  `oldest-first` recovers the signal. So recency is a heuristic about *where
+  relevance tends to be*, not relevance itself — it carries no independent signal
+  once the generator moves relevance off the recent end. Benchmark-specific.
 
 ### RQ6 — Which temporal decay shape best matches a known drift process?
 
@@ -172,6 +178,24 @@ observation that would count as an answer (including a clear negative result).
   `keyword-preserving` holds the required facts across budgets while head/tail
   truncation only succeed when the facts sit at the kept end; the advantage is
   clearest on `late-signal-compression`. Deterministic, extractive only.
+
+### RQ15 — When do fixed windows fail, and can age-aware weighting do better?
+
+- **Taxonomy:** Temporal × Comparison
+- **Test:** On a timeline with controllable signal age and temporal drift, compare
+  a fixed window (anchored at a fixed region), a sliding window (anchored at
+  "now"), pure recency, and an age-aware weighting of an observable salience
+  signal; measure answer support and the temporal age gap as signal age and drift
+  vary.
+- **Answer:** A window "fails" when the relevant signal lies outside it; report
+  the regimes where each window succeeds. Age-aware weighting "wins" if it keeps
+  salient-but-not-newest items recency drops — and is shown to be *fooled* when
+  drift gives recent decoys high salience.
+- **Phase 4 status:** *begun.* On `temporal-context-relevance`, the sliding window
+  succeeds only when the signal is recent and the fixed leading window only when
+  it is old; `age-weighted` beats recency when salience tags the relevant items,
+  but `drift-heavy` pulls it toward recent decoys so no deployable strategy
+  matches the oracle. Deterministic, synthetic, and benchmark-specific.
 
 ---
 
