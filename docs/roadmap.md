@@ -239,12 +239,34 @@ new behaviour. Conclusions are specific to the synthetic benchmarks, seeds, and
 budgets behind the artifacts — not general claims about real-world systems;
 `oracle` strategies are ceilings, not deployable.
 
-## Phase 10 — Robustness (planned)
+## Phase 10 — Robustness and perturbation analysis (complete)
 
-**Goal:** stress strategies that work under benign conditions.
+**Goal:** stress-test the existing strategies and benchmarks — how robust are
+context-engineering strategies when a benchmark's assumptions are deliberately
+stressed? — without adding a new primitive, strategy, or benchmark family.
 
-- Distractor and poisoning resistance.
-- Distribution shift between tuning and evaluation.
+- A `perturbations` package: a `Perturbation` abstraction, a `PerturbedBenchmark`
+  wrapper that flows through the ordinary runner, and a registry of built-ins.
+- Injection perturbations (`distractor-injection`, `contradiction-injection`,
+  `stale-amplification`) that add competing/conflicting/stale items, and corruption
+  perturbations (`source-quality-corruption`, `salience-corruption`) that distort
+  observable signals toward misleading values — all leaving ground truth and the
+  oracle ceiling untouched.
+- Robustness metrics (`degradation`, with `_under_noise` / `_under_conflict`
+  aliases, and `robustness_score`), comparison and aggregation utilities, and
+  oracle-gap-under-perturbation shifts.
+- Four stress groups (`distractor-stress`, `contradiction-stress`,
+  `stale-amplification`, `corruption-stress`) over the Phase 8 presets, a
+  deterministic Markdown report, and a `context-lab run-phase10` command.
+
+See [phase-10-summary.md](phase-10-summary.md) and
+[robustness-benchmarks.md](robustness-benchmarks.md).
+
+**Status:** complete. Stress-tests existing benchmarks only — no new primitive,
+strategy, or benchmark family. Conclusions are specific to the four stress groups,
+the fixed perturbation intensities/counts, and the Phase 8 seeds and budgets — not
+general claims about real-world systems; `oracle` strategies are ceilings, not
+deployable.
 
 ## Working agreement
 

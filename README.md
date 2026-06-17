@@ -70,31 +70,34 @@ Implementation phases follow the [roadmap](docs/roadmap.md).
 | [Phase 8 summary](docs/phase-8-summary.md) | The first naturalistic experiments and what they do not claim |
 | [Synthesis](docs/synthesis.md) | The Phase 9 cross-benchmark synthesis methodology |
 | [Phase 9 summary](docs/phase-9-summary.md) | The cross-benchmark synthesis and what it does not claim |
+| [Robustness benchmarks](docs/robustness-benchmarks.md) | The Phase 10 perturbations, robustness metrics, and limitations |
+| [Phase 10 summary](docs/phase-10-summary.md) | The robustness experiments and what they do not claim |
 | [Roadmap](docs/roadmap.md) | Phase plan and current status |
 | [ADRs](docs/adr/) | Architecture decision records |
 
 ## Status
 
-**Phase 9 — Cross-benchmark synthesis.** Building on the Phase 2-8 suites, the lab
-now *synthesises* their result artifacts rather than running anything new. A
-`synthesis` package loads and validates artifacts, aggregates per-seed metric
-values into one cell per `(benchmark, strategy, metric, budget)` with a
-metric-orientation table, and computes strategy profiles (strongest/weakest
-benchmarks, best/worst budgets, oracle distance), dominance (pairwise
-wins/losses/ties over shared cells and the non-dominated frontier), oracle gaps
-(per-cell gaps and an oracle-normalized score), failure flags (budget collapse,
-wide oracle gaps, budget-driven degradation), and stability (seed variance, budget
-sensitivity, ranking volatility). A `context-lab run-phase9` command re-runs the
-suites and writes both their artifacts and a deterministic synthesis report.
-Phase 9 **adds no new strategy, benchmark, metric, or algorithm** and touches no
-network or LLM. Conclusions are **specific to these synthetic artifacts** — not
-claims about real-world systems; `oracle` strategies are ceilings, not deployable.
-See the [Phase 9 summary](docs/phase-9-summary.md) and
-[synthesis methodology](docs/synthesis.md).
+**Phase 10 — Robustness and perturbation analysis.** Building on the Phase 8
+benchmarks, the lab now *stress-tests* its existing strategies. A `perturbations`
+package wraps a benchmark in a `PerturbedBenchmark` and rewrites the cases it
+generates — injecting distractors, contradictions, or amplified stale items, or
+corrupting the observable `source_quality` and `salience` signals — while leaving
+ground truth and the oracle ceiling untouched. Robustness metrics (`degradation`,
+`robustness_score`) compare each strategy's baseline against its perturbed run per
+`(strategy, benchmark, perturbation, metric)`, and oracle-gap shifts track whether
+the gap to the ceiling widens. Four stress groups (`distractor-stress`,
+`contradiction-stress`, `stale-amplification`, `corruption-stress`) over the
+Phase 8 presets, a deterministic Markdown report, and a `context-lab run-phase10`
+command tie it together. Phase 10 **adds no new primitive, strategy, or benchmark
+family** and touches no network or LLM. Conclusions are **specific to these
+synthetic stressors** — not claims about real-world systems; `oracle` strategies
+are ceilings, not deployable. See the
+[Phase 10 summary](docs/phase-10-summary.md) and
+[robustness benchmarks](docs/robustness-benchmarks.md).
 
 Earlier phases (selection, compression, temporal, retention, attention,
-interaction effects, naturalistic benchmarks) remain available; see the
-[roadmap](docs/roadmap.md).
+interaction effects, naturalistic benchmarks, cross-benchmark synthesis) remain
+available; see the [roadmap](docs/roadmap.md).
 
 ## Running the harness
 
@@ -109,6 +112,7 @@ context-lab run-phase6 --output artifacts/phase6   # Phase 6 attention suite + r
 context-lab run-phase7 --output artifacts/phase7   # Phase 7 interaction suite + report
 context-lab run-phase8 --output artifacts/phase8   # Phase 8 naturalistic suite + report
 context-lab run-phase9 --output artifacts/phase9   # Phase 9 synthesis of all suites
+context-lab run-phase10 --output artifacts/phase10 # Phase 10 robustness experiments + report
 ```
 
 ## Development

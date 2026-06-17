@@ -318,6 +318,33 @@ observation that would count as an answer (including a clear negative result).
   `context-lab run-phase9`. Specific to these synthetic artifacts, not general
   claims.
 
+### RQ21 — How robust are strategies when a benchmark's assumptions are stressed?
+
+- **Taxonomy:** Robustness × Boundary
+- **Test:** Perturb the Phase 8 naturalistic benchmarks without touching ground
+  truth — inject distractors, inject contradictions, amplify stale/superseded
+  items, and corrupt the observable `source_quality` and `salience` signals toward
+  misleading values — then re-run a curated lineup of *existing* strategies and an
+  oracle ceiling on baseline vs perturbed. Measure `degradation` (oriented
+  `baseline - perturbed`) and `robustness_score` (fraction retained) per
+  `(strategy, benchmark, perturbation, metric)`, plus whether the oracle gap
+  widens. No new primitive, strategy, or benchmark family.
+- **Answer:** A strategy "degrades gracefully" on a stressor when its degradation
+  is small and its robustness near 1.0; it is "sensitive" when a specific
+  perturbation drives a large degradation on a specific metric. Report the
+  strategy, benchmark, perturbation, and metric for each claim — never a blanket
+  label.
+- **Phase 10 status:** *begun.* Under `contradiction-injection` on
+  `revision-current-truth`, `temporal->selection` shows the largest
+  `conflict_selection_rate` degradation; under `salience-corruption` on
+  `support-stale-fix`, `salience-retention` loses nearly all `answer_support`
+  (robustness ~0.0) while `attention->selection` is unaffected on
+  `stale_selection_rate`; under `distractor-injection` on `email-old-signal`,
+  `recency` degrades most on `answer_support`; and the oracle gap widens, rather
+  than closes, under every stressor. Numbers regenerate via
+  `context-lab run-phase10`. Specific to these synthetic stressors, not general
+  claims.
+
 ---
 
 ## Maintenance

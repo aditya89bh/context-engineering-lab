@@ -8,6 +8,36 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Phase 10 — Robustness and perturbation analysis.**
+  - A `perturbations` package that stress-tests the existing benchmarks, adding no
+    new primitive, strategy, or benchmark family and touching no network or LLM:
+    - `perturbations.base` defines the `Perturbation` protocol, `PerturbationConfig`,
+      `PerturbationResult`, a `BasePerturbation`, and a `PerturbedBenchmark` wrapper
+      that rewrites a benchmark's generated cases and flows through the ordinary
+      runner while delegating scoring unchanged.
+    - `perturbations.registry` registers the built-in perturbations and turns a
+      benchmark plus a perturbation (or id) into a `PerturbedBenchmark`.
+    - `perturbations.injection` adds `DistractorInjection`, `ContradictionInjection`,
+      and `StaleAmplification` (competing, conflicting, and repeated stale items),
+      all flagged non-relevant so ground truth and the oracle ceiling stay fixed.
+    - `perturbations.corruption` adds `SourceQualityCorruption` and
+      `SalienceCorruption`, distorting observable signals toward misleading values
+      without touching ground truth.
+    - `core.robustness_metrics` defines `degradation` (with `degradation_under_noise`
+      and `degradation_under_conflict` aliases) and `robustness_score`.
+    - `perturbations.comparison` lines up baseline vs perturbed `(strategy, metric)`
+      cells (orienting cost metrics); `perturbations.aggregation` groups them by
+      stress group and computes oracle-gap shifts.
+  - Four stress groups (`distractor-stress`, `contradiction-stress`,
+    `stale-amplification`, `corruption-stress`) over the Phase 8 presets and curated
+    lineups (`experiments.phase10`), a deterministic Phase 10 Markdown report
+    (`reporting.phase10_report`) with perturbation, degradation, strategy-sensitivity,
+    and oracle-gap-under-perturbation tables, and a `context-lab run-phase10` command.
+  - The no-network/LLM guard now also covers the `perturbations` modules.
+  - Documentation: `docs/robustness-benchmarks.md`, `docs/phase-10-summary.md`, a new
+    RQ21 (how robust are strategies under stress), robustness metric definitions in
+    `docs/metrics.md`, and a roadmap that marks Phase 10 complete.
+
 - **Phase 9 — Cross-benchmark synthesis.**
   - A `synthesis` package that reads the Phase 2-8 result artifacts and
     synthesises them, adding no new strategy, benchmark, metric, or algorithm and

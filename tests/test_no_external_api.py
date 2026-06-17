@@ -1,9 +1,9 @@
 """Guard test: the lab code uses no network or LLM dependencies.
 
 Compression (Phase 3), temporal (Phase 4), retention (Phase 5), attention
-(Phase 6), interaction (Phase 7), naturalistic (Phase 8), and synthesis (Phase 9)
-work must be deterministic and local. This test scans the source modules for
-imports of networking or LLM client libraries,
+(Phase 6), interaction (Phase 7), naturalistic (Phase 8), synthesis (Phase 9),
+and perturbations (Phase 10) work must be deterministic and local. This test
+scans the source modules for imports of networking or LLM client libraries,
 failing if any appear. It is a coarse guard, not a sandbox, but it catches
 accidental introduction of an external dependency.
 """
@@ -26,6 +26,7 @@ _SCANNED_DIRS = (
     _PACKAGE_ROOT / "strategies",
     _PACKAGE_ROOT / "core",
     _PACKAGE_ROOT / "synthesis",
+    _PACKAGE_ROOT / "perturbations",
 )
 
 _SCANNED_FILES = (_PACKAGE_ROOT / "compositions.py",)
@@ -114,6 +115,15 @@ def test_guard_covers_the_synthesis_modules() -> None:
     assert "dominance.py" in names  # dominance analysis
     assert "oracle_gap.py" in names  # oracle-gap analysis
     assert "phase9_report.py" in names  # the synthesis report
+
+
+def test_guard_covers_the_perturbation_modules() -> None:
+    names = {path.name for path in _python_files()}
+    assert "injection.py" in names  # distractor/contradiction/stale perturbations
+    assert "corruption.py" in names  # source-quality/salience corruption
+    assert "robustness_metrics.py" in names  # the robustness metrics
+    assert "phase10.py" in names  # the robustness experiments
+    assert "phase10_report.py" in names  # the robustness report
 
 
 def test_naturalistic_package_ships_no_data_fixtures() -> None:

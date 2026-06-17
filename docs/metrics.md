@@ -465,6 +465,45 @@ denominator set is empty; the Phase 8 scorer records those undefined cases as
 `0.0` and notes the convention. These metrics describe specific synthetic
 scenarios, not real workplace context or real-world systems.
 
+## Robustness metrics (Phase 10)
+
+Phase 10 introduces no new task metric; it compares an existing metric measured on
+an unperturbed *baseline* run against the same metric on a *perturbed* run. All
+robustness functions operate on **oriented** values where higher is better — cost
+(lower-is-better) metrics are negated first, and neutral metrics are excluded — so
+a drop always means "got worse". Let `b` be the oriented baseline value and `p` the
+oriented perturbed value.
+
+**Degradation** — the oriented drop. Positive means the perturbation hurt;
+negative means it helped.
+
+```
+degradation = b - p
+```
+
+`degradation_under_noise` and `degradation_under_conflict` are named aliases of
+`degradation`, used to attribute a drop to a distractor/noise or a
+contradiction/conflict perturbation respectively.
+
+**Robustness score** — the fraction of baseline performance retained, clamped to
+`[0, 1]`; `1.0` means no degradation. When the baseline is non-positive the ratio
+is undefined, so the score is `1.0` if `p ≥ b` and `0.0` otherwise.
+
+```
+robustness_score = clamp(p / b, 0, 1)            (defined when b > 0)
+```
+
+**Oracle-gap shift** — the change in a strategy's oriented distance from the oracle
+ceiling on a benchmark's primary metric, baseline vs perturbed. A positive increase
+means the perturbation widened the gap to the ceiling.
+
+```
+gap_increase = perturbed_gap - baseline_gap
+```
+
+These are mechanical comparisons specific to the four stress groups, perturbation
+intensities, seeds, and budgets behind the artifacts — not general claims.
+
 ## Reporting conventions
 
 **Curves over points.** Where a budget is involved, report the
