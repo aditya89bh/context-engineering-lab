@@ -21,6 +21,7 @@ from context_engineering_lab.core.attention import SOURCE_QUALITY_KEY
 from context_engineering_lab.core.benchmark import Case
 from context_engineering_lab.core.item import Item
 from context_engineering_lab.core.json_types import JsonValue
+from context_engineering_lab.core.temporal import SALIENCE_KEY
 from context_engineering_lab.perturbations.base import (
     BasePerturbation,
     PerturbationConfig,
@@ -108,4 +109,27 @@ def source_quality_corruption(intensity: float = 1.0) -> SourceQualityCorruption
         PerturbationConfig(
             perturbation_id="source-quality-corruption", intensity=intensity
         )
+    )
+
+
+class SalienceCorruption(BasePerturbation):
+    """Distort the ``salience`` signal on items that carry it.
+
+    Models misleading salience and signal dilution: a relevant item's salience is
+    pulled down and an irrelevant item's up, so a salience-aware retention policy
+    or attention allocator is misled while content- and ground-truth-based
+    selectors are untouched.
+    """
+
+    def apply(self, case: Case, rng: random.Random) -> PerturbationResult:
+        """Corrupt the salience signal across the case's candidates."""
+        return _corrupt_signal(
+            case, SALIENCE_KEY, self._config.intensity, rng, self.id
+        )
+
+
+def salience_corruption(intensity: float = 1.0) -> SalienceCorruption:
+    """Return the default salience corruption perturbation."""
+    return SalienceCorruption(
+        PerturbationConfig(perturbation_id="salience-corruption", intensity=intensity)
     )

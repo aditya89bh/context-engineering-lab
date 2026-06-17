@@ -26,6 +26,7 @@ def default_perturbations() -> tuple[Perturbation, ...]:
     single source of truth for what the catalog and CLI expose.
     """
     from context_engineering_lab.perturbations.corruption import (
+        salience_corruption,
         source_quality_corruption,
     )
     from context_engineering_lab.perturbations.injection import (
@@ -39,6 +40,7 @@ def default_perturbations() -> tuple[Perturbation, ...]:
         contradiction_injection(),
         stale_amplification(),
         source_quality_corruption(),
+        salience_corruption(),
     )
 
 
