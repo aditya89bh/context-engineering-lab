@@ -8,6 +8,36 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Phase 5 — Forgetting and retention.**
+  - A retention interface (`core.retention`): a `RetentionPolicy` protocol, the
+    `RetentionDecision` / `RetentionStats` / `RetentionResult` records, an
+    observable `frequency` accessor key, and a `PolicyStrategy` adapter that runs
+    policies through the existing experiment runner. Kept minimal — no store or
+    persistence.
+  - Six retention policies (`retention`): `retain-all` (ignores the budget;
+    reference), `recency-retention`, `frequency-retention`, `salience-retention`,
+    a `hybrid-retention` blend of the three, and an `oracle-retention` ceiling
+    (reads the ground-truth relevance marker; documented as not deployable).
+  - The `retention-utility-preservation` synthetic benchmark mixing useful,
+    stale, harmful, and neutral items with deliberately misaligned observable
+    signals (harmful items recent and high-frequency, useful items spread across
+    time), plus knobs for stale/harmful density, memory growth, utility-signal
+    noise, and a retention-budget sweep.
+  - Three benchmark presets: `low-noise-retention`, `stale-accumulation`,
+    `harmful-memory`.
+  - Forgetting metrics (`core.retention_metrics`): `retention_precision`,
+    `retention_recall`, `useful_retention_rate`, `harmful_retention_rate`,
+    `memory_budget_utilization`, and `forgetting_efficiency`, with formulas in
+    `docs/metrics.md`.
+  - Four reproducible experiments (`retention-baselines`, `stale-accumulation`,
+    `harmful-memory`, `retention-budget-sweep`) and a Markdown report.
+  - A `context-lab run-phase5` command and a retention-policy registry; the
+    no-network/LLM guard test now also covers the retention package.
+  - Documentation: `docs/retention-benchmarks.md`, `docs/phase-5-summary.md`,
+    retention metric definitions, a Phase 5 status note on RQ7, and a new RQ16
+    (which signal a forgetting policy should trust). The roadmap marks Phase 5
+    complete.
+
 - **Phase 4 — Temporal context.**
   - Temporal utilities (`core.temporal`): age and relative-age helpers, an
     observable `salience` accessor, and a latest-timestamp ("now") helper. Kept

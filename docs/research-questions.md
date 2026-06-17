@@ -97,6 +97,12 @@ observation that would count as an answer (including a clear negative result).
 - **Answer:** Forgetting wins if a bounded store matches or beats "keep all" on
   quality at lower cost, demonstrating that discarding can help. Null: keeping
   everything is never worse.
+- **Phase 5 status:** *begun.* On `retention-utility-preservation`, the
+  `retain-all` reference always overruns the memory budget and keeps every harmful
+  item, so under a tight budget selective forgetting policies reach higher
+  retention precision and forgetting efficiency than keeping everything. This is a
+  one-shot retention decision on a synthetic benchmark, not an eviction-over-time
+  store, and the win depends on the budget being below the memory size.
 
 ### RQ8 — Does salience-proportional budget allocation beat uniform allocation?
 
@@ -196,6 +202,27 @@ observation that would count as an answer (including a clear negative result).
   it is old; `age-weighted` beats recency when salience tags the relevant items,
   but `drift-heavy` pulls it toward recent decoys so no deployable strategy
   matches the oracle. Deterministic, synthetic, and benchmark-specific.
+
+### RQ16 — Which signal should a forgetting policy trust to keep useful and drop harm?
+
+- **Taxonomy:** Forgetting × Comparison
+- **Test:** On a memory where useful, stale, harmful, and neutral items carry
+  deliberately misaligned observable signals (harmful items recur often and sit
+  recently; useful items are spread across time), compare policies that forget by
+  recency, frequency, salience, and a blend of the three; measure useful and
+  harmful retention rates and forgetting efficiency as noise and harmful density
+  vary.
+- **Answer:** A signal "wins" if it keeps useful items while dropping harm; report
+  the regimes where each fails. Recency and frequency are expected to retain harm
+  (it is recent and frequent); salience tracks utility when signals are
+  well-separated and degrades under overlap; no deployable policy should match the
+  oracle, which reads ground-truth utility.
+- **Phase 5 status:** *begun.* On `retention-utility-preservation`, recency and
+  frequency retain harmful items as expected; with low noise a salience policy
+  approaches the oracle's forgetting efficiency, but on the high-noise
+  `harmful-memory` preset every deployable policy falls well short of it. Whether
+  the hybrid blend beats the best single signal varies by preset and is measured,
+  not assumed. Deterministic, synthetic, and benchmark-specific.
 
 ---
 

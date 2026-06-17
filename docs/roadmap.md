@@ -100,13 +100,30 @@ or retention policy. Produces controlled, benchmark-specific observations only �
 not general claims about temporal reasoning; `oracle-temporal` is an upper bound,
 not deployable.
 
-## Phase 5 — Forgetting and retention (planned)
+## Phase 5 — Forgetting and retention (complete)
 
-**Goal:** study whether discarding helps, now that temporal effects are mapped.
+**Goal:** study forgetting as a policy — what to keep and what to discard under a
+memory budget, now that temporal effects are mapped.
 
-- Forgetting and eviction policies under capacity limits.
-- Temporal decay shapes matched to a known drift process.
-- Whether active forgetting beats keeping everything.
+- Retention policies spanning a `retain-all` reference, single-signal policies
+  (recency, frequency, salience), a `hybrid` blend of the three, and an
+  `oracle-retention` ceiling that reads ground-truth utility.
+- The synthetic `retention-utility-preservation` benchmark with three presets
+  (`low-noise-retention`, `stale-accumulation`, `harmful-memory`) whose items mix
+  useful, stale, harmful, and neutral information with deliberately misaligned
+  observable signals, and forgetting metrics (retention precision/recall, useful
+  and harmful retention rates, memory budget utilization, forgetting efficiency).
+- Retention, harmful-retention, and budget-performance tables and a Markdown
+  report via `context-lab run-phase5`.
+
+See [phase-5-summary.md](phase-5-summary.md) and
+[retention-benchmarks.md](retention-benchmarks.md).
+
+**Status:** complete. Studies forgetting as a one-shot retention *policy* — no
+memory store, persistence, or eviction schedule. Forgetting is treated as distinct
+from temporal relevance (old can be useful; recent can be harmful). Produces
+controlled, benchmark-specific observations only — not general claims about memory
+systems; `oracle-retention` is an upper bound, not deployable.
 
 ## Phase 6 — Attention budget allocation (planned)
 

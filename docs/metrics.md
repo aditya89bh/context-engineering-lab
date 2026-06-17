@@ -258,6 +258,71 @@ is described by where it sits across answer support, the age gap, the stale rate
 and budget utilization — for example, oldest-first attains a small age gap on an
 old signal precisely where recency's gap is largest.
 
+### Retention metrics (Phase 5)
+
+The retention benchmark (`retention-utility-preservation`) holds a small memory of
+items of four kinds and asks which to *keep* under a memory budget. Phase 5 studies
+forgetting as a policy; these metrics describe how cleanly a policy keeps useful
+items and forgets harmful ones. Forgetting is **distinct from temporal relevance**:
+old items may still be useful and recent items may be harmful, so these metrics
+partition by ground-truth *utility*, not age. For a single case, let:
+
+- `U` = the ground-truth useful items; `U_req ⊆ U` = the required (must-keep)
+  subset.
+- `H` = the ground-truth harmful items.
+- `R` = the items the policy kept (the retention); `B` = the memory budget limit.
+
+**Retention precision** — fraction of kept items that are useful. Higher means a
+cleaner memory.
+
+```
+retention_precision = |R ∩ U| / |R|             (defined when |R| > 0)
+```
+
+**Retention recall** — fraction of *required* useful items kept. The graded,
+task-facing companion to `answer_support` (which is all-or-nothing over `U_req`).
+
+```
+retention_recall = |R ∩ U_req| / |U_req|        (defined when |U_req| > 0)
+```
+
+**Useful retention rate** — fraction of *all* useful items kept. The survival rate
+of the broad useful population, the counterpart to `harmful_retention_rate`.
+
+```
+useful_retention_rate = |R ∩ U| / |U|           (defined when |U| > 0)
+```
+
+**Harmful retention rate** — fraction of harmful items kept. Lower is better: a
+good policy forgets harm. Reported as `0` when a case has no harmful items.
+
+```
+harmful_retention_rate = |R ∩ H| / |H|          (defined when |H| > 0)
+```
+
+**Memory budget utilization** — fraction of the memory budget consumed. May exceed
+`1.0` for a policy that does not honor the budget (e.g. the retain-all reference).
+
+```
+memory_budget_utilization = |R| / B             (defined when B > 0)
+```
+
+**Forgetting efficiency** — useful survival minus harmful survival. This is a
+transparent *contrast*, not a composite quality score: it is positive when a
+policy keeps more of the useful than of the harmful, `0` when it cannot tell them
+apart, and negative when it preferentially keeps harm. Its two component rates are
+always reported alongside it (the harmful term is `0` when `H` is empty).
+
+```
+forgetting_efficiency = useful_retention_rate − harmful_retention_rate
+                                                (defined when |U| > 0)
+```
+
+These are deliberately *not* combined into a single quality score. A retention
+policy is described by where it sits across these rates — for example, on a
+low-noise benchmark a salience policy approaches the oracle's forgetting
+efficiency while a frequency policy retains high-frequency harm.
+
 ## Reporting conventions
 
 **Curves over points.** Where a budget is involved, report the

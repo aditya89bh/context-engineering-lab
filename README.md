@@ -56,25 +56,29 @@ Implementation phases follow the [roadmap](docs/roadmap.md).
 | [Phase 3 summary](docs/phase-3-summary.md) | The first compression experiments and what they do not claim |
 | [Temporal benchmarks](docs/temporal-benchmarks.md) | The Phase 4 synthetic temporal benchmark and presets |
 | [Phase 4 summary](docs/phase-4-summary.md) | The first temporal experiments and what they do not claim |
+| [Retention benchmarks](docs/retention-benchmarks.md) | The Phase 5 synthetic retention benchmark and presets |
+| [Phase 5 summary](docs/phase-5-summary.md) | The first forgetting experiments and what they do not claim |
 | [Roadmap](docs/roadmap.md) | Phase plan and current status |
 | [ADRs](docs/adr/) | Architecture decision records |
 
 ## Status
 
-**Phase 4 — Temporal context.** Building on the Phase 1 harness and the
-selection and compression work, the lab now runs controlled experiments on
-*temporal context under budget pressure*: how time should shape what context
-survives. It ships five temporal strategies (`oldest-first`, `sliding-window`,
-`fixed-window`, an age-aware `age-weighted`, and an `oracle-temporal` ceiling,
-alongside the reused `recency` baseline), a synthetic `temporal-context-relevance`
-benchmark with three presets (`recent-signal`, `old-signal`, `drift-heavy`),
-temporal metrics, four reproducible experiments, and a Markdown report. Phase 4
-studies temporal *effects* only — **no forgetting, eviction, or retention
-policy** — with no external API and no LLM. Results are **early and
-benchmark-specific**: they use controlled synthetic data, `oracle-temporal` is an
-upper bound (not deployable), and nothing here is a general claim about temporal
-reasoning. See the [Phase 4 summary](docs/phase-4-summary.md) and
-[temporal benchmarks](docs/temporal-benchmarks.md).
+**Phase 5 — Forgetting and retention.** Building on the Phase 1 harness and the
+selection, compression, and temporal work, the lab now runs controlled
+experiments on *forgetting as a policy*: which information should survive a memory
+budget. It ships six retention policies (`retain-all`, `recency-retention`,
+`frequency-retention`, `salience-retention`, a `hybrid-retention` blend, and an
+`oracle-retention` ceiling), a synthetic `retention-utility-preservation`
+benchmark with three presets (`low-noise-retention`, `stale-accumulation`,
+`harmful-memory`), forgetting metrics, four reproducible experiments, and a
+Markdown report. Phase 5 studies the retention *decision* only — **no memory
+store, persistence, or eviction schedule** — with no external API and no LLM, and
+treats forgetting as distinct from temporal relevance (old can be useful; recent
+can be harmful). Results are **early and benchmark-specific**: they use controlled
+synthetic data, `oracle-retention` is an upper bound (not deployable), and nothing
+here is a general claim about memory systems. See the
+[Phase 5 summary](docs/phase-5-summary.md) and
+[retention benchmarks](docs/retention-benchmarks.md).
 
 ## Running the harness
 
@@ -84,6 +88,7 @@ context-lab run-smoke --output artifacts/smoke-result.json
 context-lab run-phase2 --output artifacts/phase2   # Phase 2 selection suite + report
 context-lab run-phase3 --output artifacts/phase3   # Phase 3 compression suite + report
 context-lab run-phase4 --output artifacts/phase4   # Phase 4 temporal suite + report
+context-lab run-phase5 --output artifacts/phase5   # Phase 5 retention suite + report
 ```
 
 ## Development
