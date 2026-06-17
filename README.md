@@ -11,9 +11,36 @@
 A research-practice repository investigating how intelligent systems decide
 **what context to retain, compress, retrieve, prioritize, and forget**.
 
-This is not another RAG implementation. The experiments themselves are the
-product. Each one is built to answer a specific question and to produce a
-result a careful reader can reproduce and argue with.
+### The problem
+
+Every system that reasons over information works inside a bounded context: a
+finite window, a memory budget, an attention span. The hard part is rarely
+*fetching* information — it is deciding what deserves the limited room that
+remains, and what to drop. Get that decision wrong and the right answer is
+crowded out by plausible noise, stale facts, or sheer volume. This is the
+context-engineering problem, and it sits underneath retrieval systems, agent
+memories, long-context models, and summarizers alike.
+
+### The thesis
+
+The decision can be studied as its own object, separately from any particular
+model or product. By isolating each primitive — selection, compression, temporal
+relevance, forgetting, attention allocation — on small, fully controlled
+benchmarks, and by always measuring against an *oracle ceiling* and content-blind
+*baselines*, we can say precisely when a strategy helps, when it does not, and how
+far it sits from the best any method could do. **The experiments themselves are
+the product**: each is built to answer one question and to produce a number a
+careful reader can reproduce and argue with.
+
+### Research scope
+
+This is **not** a RAG framework, a vector database, or a production library. It
+ships no external APIs, no LLM calls, and no network access; every benchmark is
+generated deterministically from a seed, so results regenerate bit-for-bit. The
+scope is deliberately narrow — synthetic and naturalistic-*shaped* benchmarks that
+probe context decisions in isolation and in composition — and the claims stay
+strictly benchmark-specific. See the [non-goals](docs/non-goals.md) for the
+boundaries and [limitations](LIMITATIONS.md) for what the evidence does not show.
 
 ---
 
