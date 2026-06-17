@@ -295,6 +295,29 @@ observation that would count as an answer (including a clear negative result).
   family (current = newest) but discards the old relevant email. Results are
   specific to these synthetic scenarios, not claims about real workplace context.
 
+### RQ20 — Taken together, which strategies dominate, and where do they fail?
+
+- **Taxonomy:** Comparison × Synthesis
+- **Test:** Aggregate the Phase 2-8 result artifacts into one cell per
+  `(benchmark, strategy, metric, budget)`, pick a higher-is-better primary metric
+  per benchmark, and compute strategy profiles, pairwise dominance over shared
+  cells (wins/losses/ties and the non-dominated frontier), oracle gaps and an
+  oracle-normalized score, mechanical failure flags (budget collapse, wide oracle
+  gap, budget-driven degradation), and stability (seed variance, budget
+  sensitivity, ranking volatility). No new strategy, benchmark, or metric.
+- **Answer:** A strategy "dominates" another only on the cells they share; a
+  strategy is "close to its oracle" when its normalized score nears 1.0; a
+  strategy "fails" a benchmark when a flag fires. Report the frontier and the
+  flags rather than a single winner, since primary metrics differ by benchmark.
+- **Phase 9 status:** *begun.* Synthesis confirms the per-phase picture without
+  overturning it: oracle ceilings top the dominance and normalized tables;
+  importance-aware strategies (`salience-retention`, `retention->selection`) sit
+  closest to their oracles; budget-ignoring references can exceed a budgeted
+  oracle on one metric (negative oracle distance); and disjoint-benchmark
+  strategies never compare, so the frontier is wide. Numbers regenerate via
+  `context-lab run-phase9`. Specific to these synthetic artifacts, not general
+  claims.
+
 ---
 
 ## Maintenance

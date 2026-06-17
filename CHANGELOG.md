@@ -8,6 +8,44 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Phase 9 — Cross-benchmark synthesis.**
+  - A `synthesis` package that reads the Phase 2-8 result artifacts and
+    synthesises them, adding no new strategy, benchmark, metric, or algorithm and
+    touching no network or LLM:
+    - `synthesis.loading` loads artifacts with explicit schema validation and a
+      single `ArtifactError` for missing files, malformed JSON, or bad structure.
+    - `synthesis.collection` discovers artifacts recursively in sorted order and
+      groups loaded results by benchmark or strategy.
+    - `synthesis.aggregation` collapses per-seed metric values into one
+      `AggregatedResult` cell per `(benchmark, strategy, metric, budget)`
+      (`BenchmarkAggregate`, `StrategyAggregate`, `Aggregation`), with a
+      metric-orientation table (higher/lower/neutral) and per-benchmark
+      primary-metric selection.
+    - `synthesis.profiles` builds `StrategyProfile`s (with `StrengthRecord`,
+      `WeaknessRecord`, `BudgetScore`): strongest/weakest benchmarks, best/worst
+      budgets, and mean oracle distance.
+    - `synthesis.dominance` compares strategies pairwise on shared, oriented
+      cells (wins/losses/ties), totals each strategy's record, and computes the
+      non-dominated (Pareto) frontier.
+    - `synthesis.oracle_gap` computes per-cell `OracleGap`s and per-strategy
+      `OracleSummary`s, including an oracle-normalized score on the primary metric.
+    - `synthesis.failure` flags `BUDGET_FAILURE`, `BENCHMARK_FAILURE`, and
+      `METRIC_DEGRADATION` (`FailureMode`, `FailureObservation`); oracles are
+      never flagged.
+    - `synthesis.stability` computes seed variance, budget sensitivity, and
+      ranking volatility (a normalized Kendall-tau distance across budgets).
+  - A deterministic Phase 9 Markdown report (`reporting.phase9_report`) with
+    provenance, profile, dominance, oracle-gap, failure, and stability tables and
+    explicit limitations.
+  - A `context-lab run-phase9` command (`experiments.phase9.all_phase_experiments`)
+    that re-runs the Phase 2-8 suites, writes their JSON artifacts, and emits the
+    synthesis report.
+  - The no-network/LLM guard now also covers the `synthesis` modules; tests put
+    the `tests` directory on the pytest path for shared synthesis fixtures.
+  - Documentation: `docs/synthesis.md`, `docs/phase-9-summary.md`, a new RQ20
+    (which strategies dominate, and where do they fail), and a roadmap that marks
+    Phase 9 complete and renumbers robustness to Phase 10.
+
 - **Phase 8 — Naturalistic context benchmarks.**
   - Lightweight record helpers (`benchmarks.naturalistic.records`):
     `MessageLikeRecord`, `MeetingNoteRecord`, `TicketRecord`, `RevisionRecord`,

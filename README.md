@@ -26,6 +26,7 @@ result a careful reader can reproduce and argue with.
 - How should a fixed attention budget be allocated across competing items?
 - How do these primitives interact when composed into a pipeline?
 - Do these strategies remain useful when the context resembles real working information?
+- Taken together across benchmarks, which strategies dominate, and where do they fail?
 - How robust are these strategies when the input is adversarial?
 
 A fuller statement of intent lives in the [repository thesis](docs/thesis.md),
@@ -67,32 +68,33 @@ Implementation phases follow the [roadmap](docs/roadmap.md).
 | [Phase 7 summary](docs/phase-7-summary.md) | The first interaction experiments and what they do not claim |
 | [Naturalistic benchmarks](docs/naturalistic-benchmarks.md) | The Phase 8 synthetic naturalistic benchmark families and presets |
 | [Phase 8 summary](docs/phase-8-summary.md) | The first naturalistic experiments and what they do not claim |
+| [Synthesis](docs/synthesis.md) | The Phase 9 cross-benchmark synthesis methodology |
+| [Phase 9 summary](docs/phase-9-summary.md) | The cross-benchmark synthesis and what it does not claim |
 | [Roadmap](docs/roadmap.md) | Phase plan and current status |
 | [ADRs](docs/adr/) | Architecture decision records |
 
 ## Status
 
-**Phase 8 — Naturalistic context benchmarks.** Building on the Phase 1 harness and
-the Phase 2-7 work, the lab now asks whether those strategies still behave sensibly
-when the context *looks* like real working information. It adds lightweight record
-helpers (`MessageLikeRecord`, `MeetingNoteRecord`, `TicketRecord`,
-`RevisionRecord`, `MemoryRecord`) and a shared `NaturalisticBenchmark` engine, five
-deterministic benchmark families (`email-thread-context`, `meeting-notes-context`,
-`support-ticket-context`, `document-revision-context`, `memory-log-context`) with
-six presets, three scenario metrics (`current_truth_support`,
-`superseded_fact_retention`, `conflict_selection_rate`), five reproducible
-experiments running a curated lineup of *existing* strategies and compositions plus
-an `oracle` ceiling, and a Markdown report. **Naturalistic means realistic-shaped,
-not real:** every case is generated locally from a seed, no real or private data is
-ingested, and no LLM generates content. Phase 8 **reuses existing strategies only**
-— no new algorithm. Results are **early and scenario-specific**: `oracle` is an
-upper bound (not deployable), and observations describe these synthetic scenarios,
-not all workplace context or real-world systems. See the
-[Phase 8 summary](docs/phase-8-summary.md) and
-[naturalistic benchmarks](docs/naturalistic-benchmarks.md).
+**Phase 9 — Cross-benchmark synthesis.** Building on the Phase 2-8 suites, the lab
+now *synthesises* their result artifacts rather than running anything new. A
+`synthesis` package loads and validates artifacts, aggregates per-seed metric
+values into one cell per `(benchmark, strategy, metric, budget)` with a
+metric-orientation table, and computes strategy profiles (strongest/weakest
+benchmarks, best/worst budgets, oracle distance), dominance (pairwise
+wins/losses/ties over shared cells and the non-dominated frontier), oracle gaps
+(per-cell gaps and an oracle-normalized score), failure flags (budget collapse,
+wide oracle gaps, budget-driven degradation), and stability (seed variance, budget
+sensitivity, ranking volatility). A `context-lab run-phase9` command re-runs the
+suites and writes both their artifacts and a deterministic synthesis report.
+Phase 9 **adds no new strategy, benchmark, metric, or algorithm** and touches no
+network or LLM. Conclusions are **specific to these synthetic artifacts** — not
+claims about real-world systems; `oracle` strategies are ceilings, not deployable.
+See the [Phase 9 summary](docs/phase-9-summary.md) and
+[synthesis methodology](docs/synthesis.md).
 
 Earlier phases (selection, compression, temporal, retention, attention,
-interaction effects) remain available; see the [roadmap](docs/roadmap.md).
+interaction effects, naturalistic benchmarks) remain available; see the
+[roadmap](docs/roadmap.md).
 
 ## Running the harness
 
@@ -106,6 +108,7 @@ context-lab run-phase5 --output artifacts/phase5   # Phase 5 retention suite + r
 context-lab run-phase6 --output artifacts/phase6   # Phase 6 attention suite + report
 context-lab run-phase7 --output artifacts/phase7   # Phase 7 interaction suite + report
 context-lab run-phase8 --output artifacts/phase8   # Phase 8 naturalistic suite + report
+context-lab run-phase9 --output artifacts/phase9   # Phase 9 synthesis of all suites
 ```
 
 ## Development

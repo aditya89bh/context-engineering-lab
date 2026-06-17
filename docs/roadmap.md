@@ -214,7 +214,32 @@ Produces controlled, scenario-specific observations only — not general claims
 about real workplace context or real-world systems; `oracle` is an upper bound,
 not deployable.
 
-## Phase 9 — Robustness (planned)
+## Phase 9 — Cross-benchmark synthesis (complete)
+
+**Goal:** synthesise the Phase 2-8 results into one mechanical picture, without
+adding any new strategy, benchmark, metric, or algorithm.
+
+- A `synthesis` package that loads and validates result artifacts, discovers them
+  recursively, and aggregates per-seed metric values into one cell per
+  `(benchmark, strategy, metric, budget)` with a metric-orientation table and a
+  per-benchmark primary-metric choice.
+- Strategy profiles (strongest/weakest benchmarks, best/worst budgets, oracle
+  distance), dominance analysis (pairwise wins/losses/ties over shared cells and
+  the non-dominated frontier), oracle-gap analysis (per-cell gaps and an
+  oracle-normalized score), failure analysis (budget collapse, wide oracle gaps,
+  budget-driven degradation), and stability analysis (seed variance, budget
+  sensitivity, ranking volatility).
+- A deterministic Markdown synthesis report via `context-lab run-phase9`, which
+  re-runs the Phase 2-8 suites and writes both their artifacts and the synthesis.
+
+See [phase-9-summary.md](phase-9-summary.md) and [synthesis.md](synthesis.md).
+
+**Status:** complete. Synthesis only re-describes existing artifacts; it adds no
+new behaviour. Conclusions are specific to the synthetic benchmarks, seeds, and
+budgets behind the artifacts — not general claims about real-world systems;
+`oracle` strategies are ceilings, not deployable.
+
+## Phase 10 — Robustness (planned)
 
 **Goal:** stress strategies that work under benign conditions.
 
