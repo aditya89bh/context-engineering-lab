@@ -164,6 +164,57 @@ def budget_scores(aggregation: Aggregation, strategy_id: str) -> list[BudgetScor
     ]
 
 
+def is_oracle_id(strategy_id: str) -> bool:
+    """Whether a strategy id denotes an oracle ceiling (contains ``oracle``)."""
+    return "oracle" in strategy_id.lower()
+
+
+def oracle_primary_score(
+    aggregation: Aggregation, benchmark_id: str
+) -> float | None:
+    """The best oracle's primary-metric score on a benchmark, or ``None``.
+
+    Uses the highest score among the benchmark's oracle strategies, since an
+    oracle is the intended ceiling for the primary (higher-is-better) metric.
+    """
+    benchmark = aggregation.benchmark_aggregate(benchmark_id)
+    metric = benchmark.primary_metric()
+    if metric is None:
+        return None
+    scores = [
+        score
+        for strategy_id in benchmark.strategies()
+        if is_oracle_id(strategy_id)
+        and (
+            score := aggregation.mean_over_budgets(
+                benchmark_id, strategy_id, metric
+            )
+        )
+        is not None
+    ]
+    return max(scores) if scores else None
+
+
+def oracle_distance_for(
+    aggregation: Aggregation, strategy_id: str
+) -> float | None:
+    """Mean gap from a strategy to the oracle ceiling, over its benchmarks.
+
+    For each benchmark with an oracle, the gap is ``oracle_primary - strategy``
+    on the primary metric; the result averages those gaps. ``None`` when no
+    benchmark the strategy ran on has an oracle.
+    """
+    gaps: list[float] = []
+    for benchmark_id, (_metric, score) in primary_scores(
+        aggregation, strategy_id
+    ).items():
+        ceiling = oracle_primary_score(aggregation, benchmark_id)
+        if ceiling is None:
+            continue
+        gaps.append(ceiling - score)
+    return fmean(gaps) if gaps else None
+
+
 def generate_profile(
     aggregation: Aggregation, strategy_id: str, *, top_k: int = 3
 ) -> StrategyProfile:
@@ -192,6 +243,7 @@ def generate_profile(
         worst_budgets=tuple(
             sorted(budgets, key=lambda b: (b.score, b.budget_limit))[:top_k]
         ),
+        oracle_distance=oracle_distance_for(aggregation, strategy_id),
     )
 
 
