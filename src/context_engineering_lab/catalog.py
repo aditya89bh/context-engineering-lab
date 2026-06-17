@@ -7,6 +7,10 @@ discovery) so the available entries are easy to reason about.
 
 from __future__ import annotations
 
+from context_engineering_lab.attention import default_allocators
+from context_engineering_lab.benchmarks.attention_presets import (
+    all_attention_presets,
+)
 from context_engineering_lab.benchmarks.compression_presets import (
     all_compression_presets,
 )
@@ -17,6 +21,7 @@ from context_engineering_lab.benchmarks.selection_presets import all_selection_p
 from context_engineering_lab.benchmarks.smoke import SmokeBenchmark
 from context_engineering_lab.benchmarks.temporal_presets import all_temporal_presets
 from context_engineering_lab.compression import default_compressors
+from context_engineering_lab.core.attention import AttentionAllocator
 from context_engineering_lab.core.benchmark import Benchmark
 from context_engineering_lab.core.compression import Compressor
 from context_engineering_lab.core.registry import Registry
@@ -70,6 +75,7 @@ def build_benchmark_registry() -> Registry[Benchmark]:
         *all_compression_presets(),
         *all_temporal_presets(),
         *all_retention_presets(),
+        *all_attention_presets(),
     )
     for benchmark in benchmarks:
         registry.register(str(benchmark.id), benchmark)
@@ -89,4 +95,12 @@ def build_retention_policy_registry() -> Registry[RetentionPolicy]:
     registry: Registry[RetentionPolicy] = Registry("retention-policy")
     for policy in default_policies():
         registry.register(str(policy.id), policy)
+    return registry
+
+
+def build_attention_allocator_registry() -> Registry[AttentionAllocator]:
+    """Return a registry populated with the built-in attention allocators."""
+    registry: Registry[AttentionAllocator] = Registry("attention-allocator")
+    for allocator in default_allocators():
+        registry.register(str(allocator.id), allocator)
     return registry
