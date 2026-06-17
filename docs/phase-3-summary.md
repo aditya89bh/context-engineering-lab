@@ -34,6 +34,18 @@ The line-up is structured as bounds, not as a leaderboard of deployable systems:
 - **Upper bound:** `oracle-compression` reads the ground-truth fact markers and
   keeps only target facts. It is **not deployable**; it measures headroom.
 
+### Note on budget allocation across items
+
+Phase 3 compressors split a token budget *evenly* across the input items (any
+remainder goes to the earliest items; see `compression/_common.py`). This is
+acceptable for the current `compression-fact-preservation` benchmark because each
+case contains a single document, so the whole budget applies to it and the split
+is a no-op. It is, however, a simplification: future *multi-item* compression
+benchmarks would likely need smarter allocation — salience-aware (spend more on
+items that carry the facts) or item-length-aware (proportional to each item's
+size) — rather than an even split. That allocator is intentionally deferred; see
+the `CompressionBudgetAllocator` note in [architecture.md](architecture.md).
+
 ## Observations (these benchmarks only)
 
 Run `context-lab run-phase3` to regenerate the tables. The headline patterns,

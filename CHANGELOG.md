@@ -8,6 +8,15 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Phase 3.1 — Review cleanup.**
+  - Documented that Phase 3 compressors split token budgets evenly across input
+    items — a no-op for the single-document `compression-fact-preservation`
+    cases, but a simplification that future multi-item benchmarks may need to
+    replace with salience-aware or item-length-aware allocation.
+  - Added a deferred design note in `docs/architecture.md` on a possible future
+    `CompressionBudgetAllocator`, intentionally not built until multi-item
+    compression experiments require it.
+
 - **Phase 3 — Compression.**
   - A compression interface (`core.compression`): the `Compressor` protocol,
     `CompressionStats`/`CompressionResult`, and a `CompressorStrategy` adapter so

@@ -80,6 +80,20 @@ object now would widen the most-implemented interface in the package for a singl
 present consumer. It should be introduced only when a concrete strategy genuinely
 needs run-scoped identity or seeding — at which point it warrants its own ADR.
 
+## Deferred: a compression budget allocator
+
+**Design note (deferred — do not build yet).** Phase 3 compressors split a token
+budget evenly across the items they receive (see `compression/_common.py`). With
+the current single-document compression cases this is a no-op, but multi-item
+compression would want a smarter split. A future `CompressionBudgetAllocator`
+abstraction could encapsulate that policy — for example salience-aware or
+item-length-aware allocation — so compressors stay focused on *which tokens to
+keep* rather than *how much budget each item gets*.
+
+This is **intentionally deferred** until multi-item compression experiments
+actually require it. Introducing it now would add an abstraction with no consumer;
+when the need is real it should arrive with its own ADR.
+
 ## Reproducibility model
 
 Every run is defined by `(experiment config, root seed, code version)`. The
