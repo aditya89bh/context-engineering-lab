@@ -271,6 +271,30 @@ observation that would count as an answer (including a clear negative result).
   dominates depends on the preset and budget and is measured, not assumed.
   Results are about specific compositions, not context systems in general.
 
+### RQ19 — Do context strategies still help when the context resembles real working information?
+
+- **Taxonomy:** Selection × Realism
+- **Test:** On deterministic, fully synthetic benchmarks shaped like real context
+  sources (email threads, meeting notes, support tickets, document revisions,
+  memory logs), where the answer depends on an older email, a current decision,
+  a working fix, or a current revision while superseded, conflicting, stale, and
+  harmful records add realistic noise, run a curated lineup of *existing*
+  strategies and compositions and an oracle ceiling. Score answer support and
+  recall alongside `current_truth_support`, `superseded_fact_retention`,
+  `conflict_selection_rate`, harmful retention, and stale selection.
+- **Answer:** A strategy "remains useful" on a scenario if it recovers the answer
+  while keeping conflicting/superseded/harmful selection low relative to a
+  content-only keyword baseline. Report which strategy behaves sensibly on which
+  scenario; behaviour is expected to differ by family (e.g. recency is right when
+  the truth is the newest revision but wrong when it is an old email).
+- **Phase 8 status:** *begun.* On these naturalistic scenarios, an importance-aware
+  `salience-retention` recovers the answer while cutting `conflict_selection_rate`
+  and `superseded_fact_retention` relative to keyword overlap on the email,
+  meeting, and revision families, and cuts `harmful_retention_rate` on the support
+  and memory-log families; a recency window is the right signal on the revision
+  family (current = newest) but discards the old relevant email. Results are
+  specific to these synthetic scenarios, not claims about real workplace context.
+
 ---
 
 ## Maintenance

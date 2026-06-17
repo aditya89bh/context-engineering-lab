@@ -25,6 +25,7 @@ result a careful reader can reproduce and argue with.
 - How should the passage of time shape what gets retrieved?
 - How should a fixed attention budget be allocated across competing items?
 - How do these primitives interact when composed into a pipeline?
+- Do these strategies remain useful when the context resembles real working information?
 - How robust are these strategies when the input is adversarial?
 
 A fuller statement of intent lives in the [repository thesis](docs/thesis.md),
@@ -64,29 +65,34 @@ Implementation phases follow the [roadmap](docs/roadmap.md).
 | [Phase 6 summary](docs/phase-6-summary.md) | The first allocation experiments and what they do not claim |
 | [Interaction benchmarks](docs/interaction-benchmarks.md) | The Phase 7 synthetic interaction benchmark and presets |
 | [Phase 7 summary](docs/phase-7-summary.md) | The first interaction experiments and what they do not claim |
+| [Naturalistic benchmarks](docs/naturalistic-benchmarks.md) | The Phase 8 synthetic naturalistic benchmark families and presets |
+| [Phase 8 summary](docs/phase-8-summary.md) | The first naturalistic experiments and what they do not claim |
 | [Roadmap](docs/roadmap.md) | Phase plan and current status |
 | [ADRs](docs/adr/) | Architecture decision records |
 
 ## Status
 
-**Phase 7 — Interaction effects.** Building on the Phase 1 harness and the
-selection, compression, temporal, retention, and attention work, the lab now runs
-controlled experiments on *interactions between primitives*: how those primitives
-behave when chained into a pipeline. It adds a small composition layer
-(`PipelineStep`, `StrategyComposition`, `CompositionResult`), built-in
-compositions that reuse existing primitives (`temporal->selection`,
-`attention->selection`, `retention->attention`, `temporal->retention`,
-`retention->selection`, two compression-ending pipelines, and an `oracle-pipeline`
-ceiling), a synthetic `interaction-context-pipeline` benchmark with three presets
-(`balanced-interaction`, `memory-pressure`, `noisy-context`), interaction metrics,
-four reproducible experiments comparing primitive-only baselines against composed
-pipelines, and a Markdown report. Phase 7 **composes existing primitives only** —
-no new primitive algorithm, scheduler, agent, or planner — with no external API
-and no LLM. Results are **early and benchmark-specific**: they use controlled
-synthetic data, `oracle-pipeline` is an upper bound (not deployable), and every
-observation is about a *specific composition*, not a general claim about context
-systems. See the [Phase 7 summary](docs/phase-7-summary.md) and
-[interaction benchmarks](docs/interaction-benchmarks.md).
+**Phase 8 — Naturalistic context benchmarks.** Building on the Phase 1 harness and
+the Phase 2-7 work, the lab now asks whether those strategies still behave sensibly
+when the context *looks* like real working information. It adds lightweight record
+helpers (`MessageLikeRecord`, `MeetingNoteRecord`, `TicketRecord`,
+`RevisionRecord`, `MemoryRecord`) and a shared `NaturalisticBenchmark` engine, five
+deterministic benchmark families (`email-thread-context`, `meeting-notes-context`,
+`support-ticket-context`, `document-revision-context`, `memory-log-context`) with
+six presets, three scenario metrics (`current_truth_support`,
+`superseded_fact_retention`, `conflict_selection_rate`), five reproducible
+experiments running a curated lineup of *existing* strategies and compositions plus
+an `oracle` ceiling, and a Markdown report. **Naturalistic means realistic-shaped,
+not real:** every case is generated locally from a seed, no real or private data is
+ingested, and no LLM generates content. Phase 8 **reuses existing strategies only**
+— no new algorithm. Results are **early and scenario-specific**: `oracle` is an
+upper bound (not deployable), and observations describe these synthetic scenarios,
+not all workplace context or real-world systems. See the
+[Phase 8 summary](docs/phase-8-summary.md) and
+[naturalistic benchmarks](docs/naturalistic-benchmarks.md).
+
+Earlier phases (selection, compression, temporal, retention, attention,
+interaction effects) remain available; see the [roadmap](docs/roadmap.md).
 
 ## Running the harness
 
@@ -99,6 +105,7 @@ context-lab run-phase4 --output artifacts/phase4   # Phase 4 temporal suite + re
 context-lab run-phase5 --output artifacts/phase5   # Phase 5 retention suite + report
 context-lab run-phase6 --output artifacts/phase6   # Phase 6 attention suite + report
 context-lab run-phase7 --output artifacts/phase7   # Phase 7 interaction suite + report
+context-lab run-phase8 --output artifacts/phase8   # Phase 8 naturalistic suite + report
 ```
 
 ## Development

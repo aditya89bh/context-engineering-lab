@@ -8,6 +8,43 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Phase 8 — Naturalistic context benchmarks.**
+  - Lightweight record helpers (`benchmarks.naturalistic.records`):
+    `MessageLikeRecord`, `MeetingNoteRecord`, `TicketRecord`, `RevisionRecord`,
+    and `MemoryRecord`, each converting cleanly into a core `Item`, plus a shared
+    `NaturalisticBenchmark` engine that centralises deterministic generation and a
+    single scoring routine reporting only each family's declared metrics.
+  - Five deterministic, fully synthetic benchmark families shaped like real
+    context sources: `email-thread-context` (old relevant email under recent
+    chatter), `meeting-notes-context` (current decision among superseded notes),
+    `support-ticket-context` (working fix among stale/harmful/noisy incidents,
+    source-based), `document-revision-context` (current vs superseded facts), and
+    `memory-log-context` (useful vs stale/harmful/neutral memories). Each record
+    carries ground-truth flags and misaligned observable signals (salience,
+    frequency, and — for support — source quality), with query terms embedded at
+    full/partial/none overlap.
+  - Six presets: `email-old-signal`, `email-conflict-heavy`,
+    `meeting-action-items`, `support-stale-fix`, `revision-current-truth`, and
+    `memory-log-noisy`, each declaring id, version, construct, parameters, budget
+    sweep, and expected failure modes.
+  - Three naturalistic metrics (`core.naturalistic_metrics`):
+    `current_truth_support`, `superseded_fact_retention`, and
+    `conflict_selection_rate`, with formulas in `docs/metrics.md`.
+  - Five reproducible experiments (`naturalistic-email`, `naturalistic-meeting`,
+    `naturalistic-support`, `naturalistic-revision`, `naturalistic-memory-log`)
+    running a curated lineup of *existing* strategies and compositions (`recency`,
+    `keyword-overlap`, `salience-retention`, `temporal->selection`,
+    `retention->selection`, `attention->selection` for the source-based family) and
+    an `oracle` ceiling — no new algorithm — over seeds (1, 2, 3) and multiple
+    budgets, plus a Markdown report adapting to each family's metric set.
+  - A `context-lab run-phase8` command; the naturalistic presets are registered in
+    the benchmark catalog. The no-network/LLM guard now also covers the
+    naturalistic modules and asserts the package ships no data fixtures.
+  - Documentation: `docs/naturalistic-benchmarks.md`, `docs/phase-8-summary.md`,
+    naturalistic metric definitions, and a new RQ19 (do strategies remain useful on
+    realistic-shaped context). The roadmap marks Phase 8 complete and renumbers
+    robustness to Phase 9.
+
 - **Phase 7 — Interaction effects.**
   - A composition layer (`core.composition`): `PipelineStep`, `StepRecord`,
     `CompositionResult`, and `StrategyComposition` — a linear chain of existing

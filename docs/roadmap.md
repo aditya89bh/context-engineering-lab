@@ -180,7 +180,41 @@ algorithm, scheduler, agent, or planner. Produces controlled, benchmark-specific
 observations about *specific compositions* only — not general claims about
 context systems; `oracle-pipeline` is an upper bound, not deployable.
 
-## Phase 8 — Robustness (planned)
+## Phase 8 — Naturalistic context benchmarks (complete)
+
+**Goal:** bridge from synthetic primitive benchmarks to realistic-but-controlled
+context scenarios — does context engineering still help when the context *looks*
+like real working information?
+
+- Lightweight record helpers (`MessageLikeRecord`, `MeetingNoteRecord`,
+  `TicketRecord`, `RevisionRecord`, `MemoryRecord`) that convert cleanly into
+  existing `Item` objects, plus a shared `NaturalisticBenchmark` engine.
+- Five deterministic benchmark families — `email-thread-context`,
+  `meeting-notes-context`, `support-ticket-context`, `document-revision-context`,
+  and `memory-log-context` — with six presets (`email-old-signal`,
+  `email-conflict-heavy`, `meeting-action-items`, `support-stale-fix`,
+  `revision-current-truth`, `memory-log-noisy`). Each case mixes relevant,
+  superseded, conflicting, stale, harmful, and distractor records whose
+  observable signals are deliberately misaligned with the ground truth.
+- A curated lineup of *existing* strategies and compositions (`recency`,
+  `keyword-overlap`, `salience-retention`, `temporal->selection`,
+  `retention->selection`, `attention->selection` for the source-based family) and
+  an `oracle` ceiling — no new algorithm.
+- Three naturalistic metrics (`current_truth_support`, `superseded_fact_retention`,
+  `conflict_selection_rate`) layered on the reused selection/retention/temporal
+  metrics, and a Markdown report via `context-lab run-phase8`.
+
+See [phase-8-summary.md](phase-8-summary.md) and
+[naturalistic-benchmarks.md](naturalistic-benchmarks.md).
+
+**Status:** complete. Naturalistic means realistic-*shaped*, not real: every case
+is generated locally from a seed, no real or private data is ingested, and no LLM
+generates content. Reuses the Phase 2-7 strategies and compositions unchanged.
+Produces controlled, scenario-specific observations only — not general claims
+about real workplace context or real-world systems; `oracle` is an upper bound,
+not deployable.
+
+## Phase 9 — Robustness (planned)
 
 **Goal:** stress strategies that work under benign conditions.
 
