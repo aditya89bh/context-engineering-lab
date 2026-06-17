@@ -268,6 +268,36 @@ the fixed perturbation intensities/counts, and the Phase 8 seeds and budgets —
 general claims about real-world systems; `oracle` strategies are ceilings, not
 deployable.
 
+## Phase 11 — Release hardening and publication (complete)
+
+**Goal:** convert the repository from a research workbench into a polished,
+reproducible, publishable research artifact — without adding any new primitive,
+strategy, benchmark family, perturbation, algorithm, or research functionality.
+
+- A repository audit: the layout doc was refreshed to the built tree, an unused
+  helper was removed, and structural audit tests now guard import-cleanliness,
+  the public API, catalog id uniqueness, the `py.typed` marker, and the no-print
+  rule for library code.
+- A rebuilt README (problem/thesis/scope introduction, a text architecture and
+  phase-map, and a benchmark map and quickstart) and a reproducibility package: a
+  [reproducibility guide](reproducibility.md), a small checked-in example artifact
+  under [examples/](examples/), and a validation test that regenerates it
+  byte-for-byte.
+- Publication documents — [RESULTS.md](../RESULTS.md) (evidence),
+  [FINDINGS.md](../FINDINGS.md) (interpretation), [LIMITATIONS.md](../LIMITATIONS.md),
+  and [FUTURE_WORK.md](../FUTURE_WORK.md) — plus release preparation
+  (`CITATION.cff`, refreshed contribution docs, a [release checklist](release-checklist.md))
+  and project summarization (a [project summary](project-summary.md) and a
+  [repository tour](repository-tour.md)).
+
+See [project-summary.md](project-summary.md) for the overview and
+[release-checklist.md](release-checklist.md) for the release procedure.
+
+**Status:** complete. Adds no new research functionality — only hardening,
+reproducibility, publication, and release preparation; behaviour remains
+deterministic. This is the final development phase; the next step is v1.0.0
+release preparation and tagging.
+
 ## Working agreement
 
 - Only the currently assigned phase is executed.

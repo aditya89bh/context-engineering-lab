@@ -8,6 +8,26 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Phase 11 — Release hardening and publication.** No new research functionality;
+  only hardening, reproducibility, publication, and release preparation, with
+  behaviour kept deterministic.
+  - Repository audit: `docs/repository-layout.md` refreshed to the built tree, the
+    unused `RobustnessAggregation.for_perturbation` helper removed, and
+    `tests/test_repository_audit.py` added to guard import-cleanliness, the public
+    API, catalog id uniqueness, the `py.typed` marker, and the no-print rule for
+    library code.
+  - README rebuilt: a problem/thesis/scope introduction, a text-only architecture
+    and phase-map, and a benchmark map and quickstart.
+  - Reproducibility package: `docs/reproducibility.md`, a small checked-in example
+    artifact under `docs/examples/`, and `tests/test_reproducibility_example.py`
+    that regenerates it byte-for-byte.
+  - Publication documents: `RESULTS.md` (evidence), `FINDINGS.md` (interpretation),
+    `LIMITATIONS.md`, and `FUTURE_WORK.md`.
+  - Release preparation: `CITATION.cff`, refreshed contribution docs, and
+    `docs/release-checklist.md`.
+  - Project summarization: `docs/project-summary.md` and `docs/repository-tour.md`,
+    plus a roadmap and README status that mark Phase 11 complete.
+
 - **Phase 10 — Robustness and perturbation analysis.**
   - A `perturbations` package that stress-tests the existing benchmarks, adding no
     new primitive, strategy, or benchmark family and touching no network or LLM:

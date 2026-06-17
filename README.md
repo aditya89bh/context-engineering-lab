@@ -217,7 +217,23 @@ See [docs/reproducibility.md](docs/reproducibility.md) for the full protocol.
 
 ## Status
 
-**Phase 10 — Robustness and perturbation analysis.** Building on the Phase 8
+**Phase 11 — Release hardening and publication (final development phase).** The
+repository is now prepared as a polished, reproducible, publishable research
+artifact: a repository audit with structural tests, a rebuilt README, a
+reproducibility package (guide, example artifact, and a byte-for-byte validation
+test), publication documents ([RESULTS.md](RESULTS.md), [FINDINGS.md](FINDINGS.md),
+[LIMITATIONS.md](LIMITATIONS.md), [FUTURE_WORK.md](FUTURE_WORK.md)), and release
+assets (`CITATION.cff`, a [release checklist](docs/release-checklist.md), a
+[project summary](docs/project-summary.md), and a
+[repository tour](docs/repository-tour.md)). Phase 11 **adds no new research
+functionality** — no new primitive, strategy, benchmark family, perturbation, or
+algorithm — and keeps behaviour deterministic. The next step is v1.0.0 release
+preparation and tagging.
+
+<details>
+<summary>Phase 10 — Robustness and perturbation analysis</summary>
+
+Building on the Phase 8
 benchmarks, the lab now *stress-tests* its existing strategies. A `perturbations`
 package wraps a benchmark in a `PerturbedBenchmark` and rewrites the cases it
 generates — injecting distractors, contradictions, or amplified stale items, or
@@ -234,6 +250,8 @@ synthetic stressors** — not claims about real-world systems; `oracle` strategi
 are ceilings, not deployable. See the
 [Phase 10 summary](docs/phase-10-summary.md) and
 [robustness benchmarks](docs/robustness-benchmarks.md).
+
+</details>
 
 Earlier phases (selection, compression, temporal, retention, attention,
 interaction effects, naturalistic benchmarks, cross-benchmark synthesis) remain
