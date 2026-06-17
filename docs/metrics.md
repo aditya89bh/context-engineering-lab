@@ -382,6 +382,54 @@ is described by where it sits across capture, efficiency, waste, and coverage �
 for example, on a concentrated signal a winner-take-most split approaches the
 oracle's capture while uniform wastes budget on near-empty sources.
 
+## Interaction metrics (Phase 7)
+
+Phase 7 chains existing primitives into pipelines and measures how a composition
+compares to its parts on the `interaction-context-pipeline` benchmark. It reuses
+the selection, retention, and temporal metrics above; the only metric scored
+per case is `pipeline_efficiency`. The other three are *comparative*: they
+contrast already-aggregated mean values between runs and are computed at report
+time, never as a single opaque quality score. Let `R` be the relevant ids, `S`
+the pipeline's selected ids, and `B` the final budget.
+
+**Pipeline efficiency** — relevant items captured per unit of budget. A
+throughput view of the whole pipeline; with an item budget it lies in `[0, 1]`.
+
+```
+pipeline_efficiency = |S ∩ R| / B              (defined when B > 0)
+```
+
+For the comparative metrics, let `q_pipe` be a pipeline's mean of a quality
+metric (Phase 7 uses `selection_recall`) and `q_base` the same mean for a chosen
+baseline (the primitive standing in for the pipeline's final stage).
+
+**Interaction gain** — the signed change a composition produced on a metric
+relative to a baseline. Positive means the composition scored higher.
+
+```
+interaction_gain = q_pipe − q_base
+```
+
+**Degradation rate** — relative quality lost when a composition scores *below* a
+baseline; `0` when it matches or beats it. Defined for higher-is-better metrics.
+
+```
+degradation_rate = max(0, q_base − q_pipe) / q_base     (defined when q_base > 0)
+```
+
+**Compensation effect** — how much a pipeline beats the best of its own
+constituent primitives run alone (`q_best` = max over constituents). Positive
+means one stage compensated for another's weakness.
+
+```
+compensation_effect = q_pipe − q_best          (defined with ≥ 1 constituent)
+```
+
+These contrasts depend on which primitive instance stands in for each stage, so
+the report always shows the underlying means alongside the differences. They
+describe specific compositions on a synthetic benchmark, not interactions in
+general.
+
 ## Reporting conventions
 
 **Curves over points.** Where a budget is involved, report the

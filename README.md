@@ -1,6 +1,7 @@
 # context-engineering-lab
 
-> Experiments in salience, compression, temporal context, and attention.
+> Experiments in salience, compression, temporal context, attention, and their
+> interactions.
 
 [![Python](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
@@ -23,6 +24,7 @@ result a careful reader can reproduce and argue with.
 - When does *forgetting* improve, rather than harm, downstream performance?
 - How should the passage of time shape what gets retrieved?
 - How should a fixed attention budget be allocated across competing items?
+- How do these primitives interact when composed into a pipeline?
 - How robust are these strategies when the input is adversarial?
 
 A fuller statement of intent lives in the [repository thesis](docs/thesis.md),
@@ -60,27 +62,31 @@ Implementation phases follow the [roadmap](docs/roadmap.md).
 | [Phase 5 summary](docs/phase-5-summary.md) | The first forgetting experiments and what they do not claim |
 | [Attention benchmarks](docs/attention-benchmarks.md) | The Phase 6 synthetic attention benchmark and presets |
 | [Phase 6 summary](docs/phase-6-summary.md) | The first allocation experiments and what they do not claim |
+| [Interaction benchmarks](docs/interaction-benchmarks.md) | The Phase 7 synthetic interaction benchmark and presets |
+| [Phase 7 summary](docs/phase-7-summary.md) | The first interaction experiments and what they do not claim |
 | [Roadmap](docs/roadmap.md) | Phase plan and current status |
 | [ADRs](docs/adr/) | Architecture decision records |
 
 ## Status
 
-**Phase 6 — Attention allocation.** Building on the Phase 1 harness and the
-selection, compression, temporal, and retention work, the lab now runs controlled
-experiments on *attention allocation*: how a fixed budget should be split across
-competing sources before selection. It ships six allocators (`uniform`,
-`proportional`, `salience`, a quality-led `adaptive`, `winner-take-most`, and an
-`oracle-allocation` ceiling), a synthetic `attention-source-allocation` benchmark
-with three presets (`balanced-sources`, `concentrated-signal`,
-`noisy-dominant-source`), allocation metrics, four reproducible experiments, and a
-Markdown report. Phase 6 studies the budget *split* only — **no scheduler, agent
-loop, or event system** — with no external API and no LLM, and treats allocation
-as distinct from selection (the inner fill is identical across allocators).
-Results are **early and benchmark-specific**: they use controlled synthetic data,
-`oracle-allocation` is an upper bound (not deployable), and nothing here is a
-general claim about attention mechanisms. See the
-[Phase 6 summary](docs/phase-6-summary.md) and
-[attention benchmarks](docs/attention-benchmarks.md).
+**Phase 7 — Interaction effects.** Building on the Phase 1 harness and the
+selection, compression, temporal, retention, and attention work, the lab now runs
+controlled experiments on *interactions between primitives*: how those primitives
+behave when chained into a pipeline. It adds a small composition layer
+(`PipelineStep`, `StrategyComposition`, `CompositionResult`), built-in
+compositions that reuse existing primitives (`temporal->selection`,
+`attention->selection`, `retention->attention`, `temporal->retention`,
+`retention->selection`, two compression-ending pipelines, and an `oracle-pipeline`
+ceiling), a synthetic `interaction-context-pipeline` benchmark with three presets
+(`balanced-interaction`, `memory-pressure`, `noisy-context`), interaction metrics,
+four reproducible experiments comparing primitive-only baselines against composed
+pipelines, and a Markdown report. Phase 7 **composes existing primitives only** —
+no new primitive algorithm, scheduler, agent, or planner — with no external API
+and no LLM. Results are **early and benchmark-specific**: they use controlled
+synthetic data, `oracle-pipeline` is an upper bound (not deployable), and every
+observation is about a *specific composition*, not a general claim about context
+systems. See the [Phase 7 summary](docs/phase-7-summary.md) and
+[interaction benchmarks](docs/interaction-benchmarks.md).
 
 ## Running the harness
 
@@ -92,6 +98,7 @@ context-lab run-phase3 --output artifacts/phase3   # Phase 3 compression suite +
 context-lab run-phase4 --output artifacts/phase4   # Phase 4 temporal suite + report
 context-lab run-phase5 --output artifacts/phase5   # Phase 5 retention suite + report
 context-lab run-phase6 --output artifacts/phase6   # Phase 6 attention suite + report
+context-lab run-phase7 --output artifacts/phase7   # Phase 7 interaction suite + report
 ```
 
 ## Development

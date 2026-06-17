@@ -8,6 +8,42 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Phase 7 — Interaction effects.**
+  - A composition layer (`core.composition`): `PipelineStep`, `StepRecord`,
+    `CompositionResult`, and `StrategyComposition` — a linear chain of existing
+    strategies that is itself a `Strategy` and runs through the existing
+    experiment runner. Non-final stages receive a widened budget; only the final
+    stage enforces the real budget. Kept minimal — no workflow engine or DAG.
+  - Built-in compositions (`compositions`) reusing existing primitives:
+    `temporal->selection`, `attention->selection`, `retention->attention`,
+    `temporal->retention`, `retention->selection`, the token-budget
+    `selection->compression` and `retention->compression`, and an
+    `oracle-pipeline` ceiling (reads ground-truth relevance; documented as not
+    deployable). No new primitive algorithm is introduced.
+  - The `interaction-context-pipeline` synthetic benchmark whose cases mix
+    relevant, harmful, stale, and distractor items across sources and a fixed
+    timeline, with deliberately misaligned signals (harmful items carry the query
+    terms and are salient/recent but rarely corroborated), plus knobs for source
+    count, source imbalance, stale/harmful/distractor density, signal
+    concentration, and budget pressure.
+  - Three benchmark presets: `balanced-interaction`, `memory-pressure`,
+    `noisy-context`.
+  - Interaction metrics (`core.interaction_metrics`): a per-case
+    `pipeline_efficiency`, plus the comparative `interaction_gain`,
+    `degradation_rate`, and `compensation_effect`, with formulas in
+    `docs/metrics.md`.
+  - Four reproducible experiments (`interaction-balanced`,
+    `interaction-memory-pressure`, `interaction-noisy-context`,
+    `interaction-budget-sweep`) comparing primitive-only baselines against
+    composed pipelines, and a Markdown report with recall, harmful-retention, and
+    interaction-metric tables.
+  - A `context-lab run-phase7` command and a composition registry; the
+    no-network/LLM guard test now also covers the composition modules.
+  - Documentation: `docs/interaction-benchmarks.md`, `docs/phase-7-summary.md`,
+    interaction metric definitions, a new RQ18 (how primitives interact when
+    composed). The roadmap marks Phase 7 complete and renumbers robustness to
+    Phase 8.
+
 - **Phase 6 — Attention allocation.**
   - An attention interface (`core.attention`): a `Source` grouping, an
     `AttentionAllocator` protocol, the `AllocationDecision` / `AllocationStats` /

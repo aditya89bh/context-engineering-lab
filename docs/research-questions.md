@@ -249,6 +249,28 @@ observation that would count as an answer (including a clear negative result).
   salience-based splits pour budget into the trap while the adaptive allocator
   resists it. Deterministic, synthetic, and benchmark-specific.
 
+### RQ18 — How do context primitives interact when composed into a pipeline?
+
+- **Taxonomy:** Composition × Interaction
+- **Test:** On cases that exercise several primitives at once (relevant, harmful,
+  stale, and distractor items spread across sources and a timeline), run each
+  primitive alone and chained pipelines (e.g. `retention->selection`,
+  `temporal->retention`, `retention->attention`); contrast each pipeline with the
+  baseline standing in for its final stage using interaction gain, degradation
+  rate, and compensation effect, plus harmful retention and recall.
+- **Answer:** A composition "helps" if it beats that baseline on a metric (e.g. a
+  forgetting stage cuts harmful retention a selector keeps) and "hurts" if it
+  degrades one (e.g. a recency window drops spread-out relevant items a selector
+  would keep). Report which combinations dominate under which budgets; no
+  deployable pipeline should match the oracle ceiling.
+- **Phase 7 status:** *begun.* On `interaction-context-pipeline`, a
+  frequency-aware retention stage before selection or attention cuts
+  `harmful_retention_rate` relative to those primitives alone (which keep traps
+  that carry the query terms), while a recency window before selection lowers
+  `selection_recall` by discarding old-but-relevant items. Which composition
+  dominates depends on the preset and budget and is measured, not assumed.
+  Results are about specific compositions, not context systems in general.
+
 ---
 
 ## Maintenance

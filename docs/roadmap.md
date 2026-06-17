@@ -151,7 +151,36 @@ allocators). Produces controlled, benchmark-specific observations only — not
 general claims about attention mechanisms; `oracle-allocation` is an upper bound,
 not deployable.
 
-## Phase 7 — Robustness (planned)
+## Phase 7 — Interaction effects (complete)
+
+**Goal:** study how the Phase 2-6 primitives interact when composed, rather than
+inventing new primitives.
+
+- A small composition layer (`core.composition`): `PipelineStep`,
+  `StrategyComposition`, and `CompositionResult` that chain existing strategies
+  into a linear pipeline — itself a `Strategy`, so it runs through the existing
+  runner. No workflow engine or DAG.
+- Built-in compositions reusing existing primitives (`compositions`):
+  `temporal->selection`, `attention->selection`, `retention->attention`,
+  `temporal->retention`, `retention->selection`, two compression-ending pipelines,
+  and an `oracle-pipeline` ceiling.
+- The synthetic `interaction-context-pipeline` benchmark with three presets
+  (`balanced-interaction`, `memory-pressure`, `noisy-context`) whose cases mix
+  relevant, harmful, stale, and distractor items across sources and a timeline,
+  and interaction metrics (`pipeline_efficiency`, plus the comparative
+  `interaction_gain`, `degradation_rate`, `compensation_effect`).
+- Primitive-only baselines and composed pipelines, recall / harmful-retention /
+  interaction-metric tables, and a Markdown report via `context-lab run-phase7`.
+
+See [phase-7-summary.md](phase-7-summary.md) and
+[interaction-benchmarks.md](interaction-benchmarks.md).
+
+**Status:** complete. Composes existing primitives only — no new primitive
+algorithm, scheduler, agent, or planner. Produces controlled, benchmark-specific
+observations about *specific compositions* only — not general claims about
+context systems; `oracle-pipeline` is an upper bound, not deployable.
+
+## Phase 8 — Robustness (planned)
 
 **Goal:** stress strategies that work under benign conditions.
 
