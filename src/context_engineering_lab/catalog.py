@@ -10,6 +10,9 @@ from __future__ import annotations
 from context_engineering_lab.benchmarks.compression_presets import (
     all_compression_presets,
 )
+from context_engineering_lab.benchmarks.retention_presets import (
+    all_retention_presets,
+)
 from context_engineering_lab.benchmarks.selection_presets import all_selection_presets
 from context_engineering_lab.benchmarks.smoke import SmokeBenchmark
 from context_engineering_lab.benchmarks.temporal_presets import all_temporal_presets
@@ -17,7 +20,9 @@ from context_engineering_lab.compression import default_compressors
 from context_engineering_lab.core.benchmark import Benchmark
 from context_engineering_lab.core.compression import Compressor
 from context_engineering_lab.core.registry import Registry
+from context_engineering_lab.core.retention import RetentionPolicy
 from context_engineering_lab.core.strategy import Strategy
+from context_engineering_lab.retention import default_policies
 from context_engineering_lab.strategies.keyword_overlap import KeywordOverlapSelection
 from context_engineering_lab.strategies.oracle import OracleSelection
 from context_engineering_lab.strategies.positional import (
@@ -64,6 +69,7 @@ def build_benchmark_registry() -> Registry[Benchmark]:
         *all_selection_presets(),
         *all_compression_presets(),
         *all_temporal_presets(),
+        *all_retention_presets(),
     )
     for benchmark in benchmarks:
         registry.register(str(benchmark.id), benchmark)
@@ -75,4 +81,12 @@ def build_compressor_registry() -> Registry[Compressor]:
     registry: Registry[Compressor] = Registry("compressor")
     for compressor in default_compressors():
         registry.register(str(compressor.id), compressor)
+    return registry
+
+
+def build_retention_policy_registry() -> Registry[RetentionPolicy]:
+    """Return a registry populated with the built-in retention policies."""
+    registry: Registry[RetentionPolicy] = Registry("retention-policy")
+    for policy in default_policies():
+        registry.register(str(policy.id), policy)
     return registry
