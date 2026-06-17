@@ -130,3 +130,54 @@ def distractor_injection(count: int = 6) -> DistractorInjection:
     return DistractorInjection(
         PerturbationConfig(perturbation_id="distractor-injection", count=count)
     )
+
+
+class ContradictionInjection(BasePerturbation):
+    """Inject on-topic items that conflict with the case's current truth.
+
+    Injected items repeat the query terms and read plausibly, but are flagged
+    ``conflicting=True`` (and ``oracle_relevant=False``). They are designed to be
+    kept by content-aware selectors that cannot tell a conflicting fact from the
+    real one, raising ``conflict_selection_rate`` without changing ground truth.
+    """
+
+    def apply(self, case: Case, rng: random.Random) -> PerturbationResult:
+        """Append ``config.count`` conflicting items to the case."""
+        base_ts = _max_timestamp(case)
+        length = _avg_length(case)
+        added: list[Item] = []
+        for i in range(self._config.count):
+            meta = _base_metadata()
+            meta[CONFLICTING_KEY] = True
+            meta[SALIENCE_KEY] = round(rng.uniform(0.4, 0.7), 4)
+            meta[FREQUENCY_KEY] = rng.randint(2, 5)
+            added.append(
+                Item(
+                    id=ItemId(f"contradiction-{case.case_id}-{i}"),
+                    content=f"{_query_terms(case, rng)} instead",
+                    length=length,
+                    timestamp=base_ts + i + 1,
+                    source="injected-contradiction",
+                    metadata=meta,
+                )
+            )
+        new_case = Case(
+            case_id=case.case_id,
+            task=case.task,
+            candidates=(*case.candidates, *added),
+            relevant_ids=case.relevant_ids,
+            required_ids=case.required_ids,
+        )
+        return PerturbationResult(
+            perturbation_id=self.id,
+            case=new_case,
+            items_added=len(added),
+            items_modified=0,
+        )
+
+
+def contradiction_injection(count: int = 4) -> ContradictionInjection:
+    """Return the default contradiction-injection perturbation."""
+    return ContradictionInjection(
+        PerturbationConfig(perturbation_id="contradiction-injection", count=count)
+    )

@@ -25,9 +25,15 @@ def default_perturbations() -> tuple[Perturbation, ...]:
     Built-ins are added as each perturbation family lands; the tuple is the
     single source of truth for what the catalog and CLI expose.
     """
-    from context_engineering_lab.perturbations.injection import distractor_injection
+    from context_engineering_lab.perturbations.injection import (
+        contradiction_injection,
+        distractor_injection,
+    )
 
-    return (distractor_injection(),)
+    return (
+        distractor_injection(),
+        contradiction_injection(),
+    )
 
 
 def build_perturbation_registry(
