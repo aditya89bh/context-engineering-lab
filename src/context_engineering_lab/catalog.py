@@ -14,12 +14,16 @@ from context_engineering_lab.benchmarks.attention_presets import (
 from context_engineering_lab.benchmarks.compression_presets import (
     all_compression_presets,
 )
+from context_engineering_lab.benchmarks.interaction_presets import (
+    all_interaction_presets,
+)
 from context_engineering_lab.benchmarks.retention_presets import (
     all_retention_presets,
 )
 from context_engineering_lab.benchmarks.selection_presets import all_selection_presets
 from context_engineering_lab.benchmarks.smoke import SmokeBenchmark
 from context_engineering_lab.benchmarks.temporal_presets import all_temporal_presets
+from context_engineering_lab.compositions import default_compositions
 from context_engineering_lab.compression import default_compressors
 from context_engineering_lab.core.attention import AttentionAllocator
 from context_engineering_lab.core.benchmark import Benchmark
@@ -76,6 +80,7 @@ def build_benchmark_registry() -> Registry[Benchmark]:
         *all_temporal_presets(),
         *all_retention_presets(),
         *all_attention_presets(),
+        *all_interaction_presets(),
     )
     for benchmark in benchmarks:
         registry.register(str(benchmark.id), benchmark)
@@ -103,4 +108,12 @@ def build_attention_allocator_registry() -> Registry[AttentionAllocator]:
     registry: Registry[AttentionAllocator] = Registry("attention-allocator")
     for allocator in default_allocators():
         registry.register(str(allocator.id), allocator)
+    return registry
+
+
+def build_composition_registry() -> Registry[Strategy]:
+    """Return a registry populated with the built-in strategy compositions."""
+    registry: Registry[Strategy] = Registry("composition")
+    for composition in default_compositions():
+        registry.register(str(composition.id), composition)
     return registry
