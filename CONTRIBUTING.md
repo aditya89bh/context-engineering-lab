@@ -58,7 +58,21 @@ python -m build    # packaging
 Randomness derives from a single root seed via
 `context_engineering_lab.seeding` (see
 [ADR-0003](docs/adr/0003-deterministic-seeding.md)). Experiments run across
-multiple seeds and record their configuration so results regenerate exactly.
+multiple seeds and record their configuration so results regenerate exactly. The
+full protocol and a checked-in example artifact are documented in
+[docs/reproducibility.md](docs/reproducibility.md), and enforced by
+`tests/test_reproducibility_example.py`.
+
+## Claims and evidence
+
+Reported claims must be **benchmark-specific** and traceable to a number. State
+the strategy, benchmark, and metric (and budget where relevant) — e.g. "on
+`high-distractor-selection`, `keyword-overlap` reaches mean `answer_support`
+0.21", not "keyword-overlap is weak". Evidence lives in
+[RESULTS.md](RESULTS.md), interpretation in [FINDINGS.md](FINDINGS.md), and the
+boundaries in [LIMITATIONS.md](LIMITATIONS.md); new results should slot into the
+same structure. `oracle*` strategies are ceilings and must never be presented as
+deployable.
 
 ## Code of conduct
 
