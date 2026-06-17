@@ -106,3 +106,36 @@ def test_run_phase3_is_reproducible(tmp_path: Path) -> None:
     assert (first / "summary.md").read_text(encoding="utf-8") == (
         second / "summary.md"
     ).read_text(encoding="utf-8")
+
+
+def test_run_phase4_writes_artifacts_and_summary(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    output = tmp_path / "phase4"
+    exit_code = main(["run-phase4", "--output", str(output)])
+    captured = capsys.readouterr()
+
+    assert exit_code == 0
+    assert "run_id=" in captured.out
+    summary = output / "summary.md"
+    assert summary.exists()
+    for name in (
+        "temporal-recent-signal",
+        "temporal-old-signal",
+        "temporal-drift",
+        "temporal-budget-sweep",
+    ):
+        artifact = output / f"{name}.json"
+        assert artifact.exists()
+        assert read_result(artifact).results
+    assert "Phase 4 report" in summary.read_text(encoding="utf-8")
+
+
+def test_run_phase4_is_reproducible(tmp_path: Path) -> None:
+    first = tmp_path / "one"
+    second = tmp_path / "two"
+    main(["run-phase4", "--output", str(first)])
+    main(["run-phase4", "--output", str(second)])
+    assert (first / "summary.md").read_text(encoding="utf-8") == (
+        second / "summary.md"
+    ).read_text(encoding="utf-8")

@@ -1,9 +1,9 @@
-"""Guard test: the compression code uses no network or LLM dependencies.
+"""Guard test: the lab code uses no network or LLM dependencies.
 
-Phase 3 compression must be deterministic and local. This test scans the Phase 3
-source modules for imports of networking or LLM client libraries, failing if any
-appear. It is a coarse guard, not a sandbox, but it catches accidental
-introduction of an external dependency.
+Compression (Phase 3) and temporal (Phase 4) work must be deterministic and
+local. This test scans the source modules for imports of networking or LLM
+client libraries, failing if any appear. It is a coarse guard, not a sandbox, but
+it catches accidental introduction of an external dependency.
 """
 
 from __future__ import annotations
@@ -14,11 +14,12 @@ import context_engineering_lab
 
 _PACKAGE_ROOT = Path(context_engineering_lab.__file__).parent
 
-_PHASE3_DIRS = (
+_SCANNED_DIRS = (
     _PACKAGE_ROOT / "compression",
     _PACKAGE_ROOT / "benchmarks",
     _PACKAGE_ROOT / "experiments",
     _PACKAGE_ROOT / "reporting",
+    _PACKAGE_ROOT / "strategies",
     _PACKAGE_ROOT / "core",
 )
 
@@ -41,7 +42,7 @@ _FORBIDDEN = (
 
 def _python_files() -> list[Path]:
     files: list[Path] = []
-    for directory in _PHASE3_DIRS:
+    for directory in _SCANNED_DIRS:
         files.extend(sorted(directory.rglob("*.py")))
     return files
 
@@ -60,3 +61,9 @@ def test_guard_covers_the_compression_modules() -> None:
     names = {path.name for path in _python_files()}
     assert "compression.py" in names  # the benchmark
     assert "oracle.py" in names  # a compressor
+
+
+def test_guard_covers_the_temporal_modules() -> None:
+    names = {path.name for path in _python_files()}
+    assert "temporal.py" in names  # temporal strategies and benchmark
+    assert "temporal_metrics.py" in names

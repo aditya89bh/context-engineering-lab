@@ -25,6 +25,11 @@ def test_catalog_contains_builtins() -> None:
         "random",
         "keyword-overlap",
         "oracle",
+        "oldest-first",
+        "sliding-window-5",
+        "fixed-window-5",
+        "age-weighted-hl4",
+        "oracle-temporal",
     } <= set(strategies.names())
     assert {
         "harness-smoke",
@@ -34,6 +39,9 @@ def test_catalog_contains_builtins() -> None:
         "easy-compression",
         "late-signal-compression",
         "dense-distractor-compression",
+        "recent-signal",
+        "old-signal",
+        "drift-heavy",
     } <= set(benchmarks.names())
 
 
