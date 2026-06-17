@@ -8,6 +8,33 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Phase 4 — Temporal context.**
+  - Temporal utilities (`core.temporal`): age and relative-age helpers, an
+    observable `salience` accessor, and a latest-timestamp ("now") helper. Kept
+    minimal — no event store or clock.
+  - Five temporal strategies (`strategies.temporal`): `oldest-first`,
+    `sliding-window`, `fixed-window` (anchored at the timeline start),
+    `age-weighted` (salience discounted by age decay), and an `oracle-temporal`
+    ceiling (reads the ground-truth relevance flag; documented as not
+    deployable). `recency` is reused unchanged from Phase 2.
+  - The `temporal-context-relevance` synthetic benchmark with configurable
+    relevant/distractor age bands, temporal drift, sequence length, and an
+    item-budget sweep; items carry an observable salience signal and a hidden
+    relevance flag.
+  - Three benchmark presets: `recent-signal`, `old-signal`, `drift-heavy`.
+  - Temporal metrics (`core.temporal_metrics`): `temporal_relevance`,
+    `stale_selection_rate`, `age_of_selected_context`, and `relevant_age_gap`,
+    with formulas in `docs/metrics.md`.
+  - Four reproducible experiments (`temporal-recent-signal`,
+    `temporal-old-signal`, `temporal-drift`, `temporal-budget-sweep`) and a
+    Markdown report.
+  - A `context-lab run-phase4` command; the no-network/LLM guard test now also
+    covers the strategies package and the temporal modules.
+  - Documentation: `docs/temporal-benchmarks.md`, `docs/phase-4-summary.md`,
+    temporal metric definitions, a Phase 4 status note on RQ5, and a new RQ15
+    (fixed windows and age-aware weighting). The roadmap marks Phase 4 complete
+    and defers forgetting/retention to a later phase.
+
 - **Phase 3.1 — Review cleanup.**
   - Documented that Phase 3 compressors split token budgets evenly across input
     items — a no-op for the single-document `compression-fact-preservation`

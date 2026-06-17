@@ -54,23 +54,27 @@ Implementation phases follow the [roadmap](docs/roadmap.md).
 | [Phase 2 summary](docs/phase-2-summary.md) | The first selection experiments and what they do not claim |
 | [Compression benchmarks](docs/compression-benchmarks.md) | The Phase 3 synthetic compression benchmark and presets |
 | [Phase 3 summary](docs/phase-3-summary.md) | The first compression experiments and what they do not claim |
+| [Temporal benchmarks](docs/temporal-benchmarks.md) | The Phase 4 synthetic temporal benchmark and presets |
+| [Phase 4 summary](docs/phase-4-summary.md) | The first temporal experiments and what they do not claim |
 | [Roadmap](docs/roadmap.md) | Phase plan and current status |
 | [ADRs](docs/adr/) | Architecture decision records |
 
 ## Status
 
-**Phase 3 — Compression.** Building on the Phase 1 harness and the Phase 2
-selection work, the lab now runs controlled experiments on *deterministic
-compression under budget pressure*. It ships six compressors (`no-compression`,
-`head-truncation`, `tail-truncation`, `keyword-preserving`, `sentence-boundary`,
-and an `oracle-compression` ceiling), a synthetic `compression-fact-preservation`
-benchmark with three presets, compression metrics, four reproducible experiments,
-and a Markdown report. There is **no LLM summarization** and no external API.
-Results are **early and benchmark-specific**: they use controlled synthetic data,
-`oracle-compression` is an upper bound (not deployable), and nothing here is a
-general claim about summarization or context engineering. See the
-[Phase 3 summary](docs/phase-3-summary.md) and
-[compression benchmarks](docs/compression-benchmarks.md).
+**Phase 4 — Temporal context.** Building on the Phase 1 harness and the
+selection and compression work, the lab now runs controlled experiments on
+*temporal context under budget pressure*: how time should shape what context
+survives. It ships five temporal strategies (`oldest-first`, `sliding-window`,
+`fixed-window`, an age-aware `age-weighted`, and an `oracle-temporal` ceiling,
+alongside the reused `recency` baseline), a synthetic `temporal-context-relevance`
+benchmark with three presets (`recent-signal`, `old-signal`, `drift-heavy`),
+temporal metrics, four reproducible experiments, and a Markdown report. Phase 4
+studies temporal *effects* only — **no forgetting, eviction, or retention
+policy** — with no external API and no LLM. Results are **early and
+benchmark-specific**: they use controlled synthetic data, `oracle-temporal` is an
+upper bound (not deployable), and nothing here is a general claim about temporal
+reasoning. See the [Phase 4 summary](docs/phase-4-summary.md) and
+[temporal benchmarks](docs/temporal-benchmarks.md).
 
 ## Running the harness
 
@@ -79,6 +83,7 @@ context-lab list                                   # registered strategies/bench
 context-lab run-smoke --output artifacts/smoke-result.json
 context-lab run-phase2 --output artifacts/phase2   # Phase 2 selection suite + report
 context-lab run-phase3 --output artifacts/phase3   # Phase 3 compression suite + report
+context-lab run-phase4 --output artifacts/phase4   # Phase 4 temporal suite + report
 ```
 
 ## Development
