@@ -4,7 +4,10 @@ from __future__ import annotations
 
 import pytest
 
-from context_engineering_lab.synthesis.aggregation import aggregate_results
+from context_engineering_lab.synthesis.aggregation import (
+    Aggregation,
+    aggregate_results,
+)
 from context_engineering_lab.synthesis.failure import (
     FailureMode,
     analyze_failures,
@@ -12,10 +15,10 @@ from context_engineering_lab.synthesis.failure import (
     budget_failures,
     metric_degradation,
 )
-from synthesis_helpers import simple_result
+from tests.synthesis_helpers import simple_result
 
 
-def _aggregation():  # type: ignore[no-untyped-def]
+def _aggregation() -> Aggregation:
     res = simple_result(
         "selection",
         {

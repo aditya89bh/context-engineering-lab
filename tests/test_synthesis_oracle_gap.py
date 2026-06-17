@@ -4,17 +4,20 @@ from __future__ import annotations
 
 import pytest
 
-from context_engineering_lab.synthesis.aggregation import aggregate_results
+from context_engineering_lab.synthesis.aggregation import (
+    Aggregation,
+    aggregate_results,
+)
 from context_engineering_lab.synthesis.oracle_gap import (
     gaps_for_strategy,
     oracle_oriented_cells,
     oracle_summaries,
     oracle_summary,
 )
-from synthesis_helpers import simple_result
+from tests.synthesis_helpers import simple_result
 
 
-def _aggregation():  # type: ignore[no-untyped-def]
+def _aggregation() -> Aggregation:
     res = simple_result(
         "selection",
         {

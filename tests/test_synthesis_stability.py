@@ -4,7 +4,10 @@ from __future__ import annotations
 
 import pytest
 
-from context_engineering_lab.synthesis.aggregation import aggregate_results
+from context_engineering_lab.synthesis.aggregation import (
+    Aggregation,
+    aggregate_results,
+)
 from context_engineering_lab.synthesis.stability import (
     budget_sensitivity,
     ranking_volatilities,
@@ -13,10 +16,10 @@ from context_engineering_lab.synthesis.stability import (
     stability_reports,
     strategy_stability,
 )
-from synthesis_helpers import simple_result
+from tests.synthesis_helpers import simple_result
 
 
-def _seeded_aggregation():  # type: ignore[no-untyped-def]
+def _seeded_aggregation() -> Aggregation:
     res = simple_result(
         "selection",
         {

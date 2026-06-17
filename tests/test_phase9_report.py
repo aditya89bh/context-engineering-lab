@@ -2,15 +2,16 @@
 
 from __future__ import annotations
 
+from context_engineering_lab.core.results import ExperimentResult
 from context_engineering_lab.reporting.phase9_report import (
     render_from_results,
     render_report,
 )
 from context_engineering_lab.synthesis.aggregation import aggregate_results
-from synthesis_helpers import simple_result
+from tests.synthesis_helpers import simple_result
 
 
-def _results():  # type: ignore[no-untyped-def]
+def _results() -> list[ExperimentResult]:
     selection = simple_result(
         "selection",
         {

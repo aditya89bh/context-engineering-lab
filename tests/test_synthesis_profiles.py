@@ -4,7 +4,10 @@ from __future__ import annotations
 
 import pytest
 
-from context_engineering_lab.synthesis.aggregation import aggregate_results
+from context_engineering_lab.synthesis.aggregation import (
+    Aggregation,
+    aggregate_results,
+)
 from context_engineering_lab.synthesis.profiles import (
     generate_profile,
     generate_profiles,
@@ -13,10 +16,10 @@ from context_engineering_lab.synthesis.profiles import (
     oracle_primary_score,
     primary_scores,
 )
-from synthesis_helpers import simple_result
+from tests.synthesis_helpers import simple_result
 
 
-def _aggregation():  # type: ignore[no-untyped-def]
+def _aggregation() -> Aggregation:
     selection = simple_result(
         "selection",
         {
@@ -37,8 +40,10 @@ def _aggregation():  # type: ignore[no-untyped-def]
 def test_primary_scores_uses_primary_metric() -> None:
     agg = _aggregation()
     scores = primary_scores(agg, "recency")
-    assert scores["selection"] == ("answer_support", pytest.approx(0.5))
-    assert scores["attention"] == ("signal_capture_rate", pytest.approx(0.2))
+    assert scores["selection"][0] == "answer_support"
+    assert scores["selection"][1] == pytest.approx(0.5)
+    assert scores["attention"][0] == "signal_capture_rate"
+    assert scores["attention"][1] == pytest.approx(0.2)
 
 
 def test_profile_strengths_and_weaknesses() -> None:

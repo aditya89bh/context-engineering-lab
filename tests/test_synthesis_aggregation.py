@@ -27,7 +27,7 @@ from context_engineering_lab.synthesis.loading import (
     load_artifact,
     validate_artifact_schema,
 )
-from synthesis_helpers import metric, result, run, simple_result
+from tests.synthesis_helpers import metric, result, run, simple_result
 
 
 def test_load_artifact_round_trips(tmp_path: Path) -> None:

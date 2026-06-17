@@ -4,7 +4,10 @@ from __future__ import annotations
 
 import pytest
 
-from context_engineering_lab.synthesis.aggregation import aggregate_results
+from context_engineering_lab.synthesis.aggregation import (
+    Aggregation,
+    aggregate_results,
+)
 from context_engineering_lab.synthesis.dominance import (
     compare_pair,
     dominance_matrix,
@@ -13,10 +16,10 @@ from context_engineering_lab.synthesis.dominance import (
     non_dominated_strategies,
     oriented_quality_cells,
 )
-from synthesis_helpers import simple_result
+from tests.synthesis_helpers import simple_result
 
 
-def _retention_aggregation():  # type: ignore[no-untyped-def]
+def _retention_aggregation() -> Aggregation:
     res = simple_result(
         "retention",
         {
