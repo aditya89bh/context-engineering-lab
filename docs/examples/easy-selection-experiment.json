@@ -1,0 +1,150 @@
+{
+  "metadata": {
+    "benchmark_id": "easy-selection",
+    "benchmark_version": "1.0",
+    "budgets": [
+      [
+        1,
+        "items"
+      ]
+    ],
+    "code_version": "0.0.0",
+    "experiment_id": "example-easy-selection",
+    "platform": "example",
+    "python_version": "example",
+    "run_id": "461eba182e261415ebb43a685967d9f1",
+    "seeds": [
+      20260101
+    ],
+    "strategy_ids": [
+      "first-n",
+      "keyword-overlap",
+      "oracle"
+    ]
+  },
+  "results": [
+    {
+      "metrics": [
+        {
+          "budget_limit": 1,
+          "budget_unit": "items",
+          "name": "answer_support",
+          "sample_size": 24,
+          "seed": 20260101,
+          "stddev": 0.37267799624996495,
+          "value": 0.16666666666666666
+        },
+        {
+          "budget_limit": 1,
+          "budget_unit": "items",
+          "name": "selection_recall",
+          "sample_size": 24,
+          "seed": 20260101,
+          "stddev": 0.37267799624996495,
+          "value": 0.16666666666666666
+        },
+        {
+          "budget_limit": 1,
+          "budget_unit": "items",
+          "name": "selection_precision",
+          "sample_size": 24,
+          "seed": 20260101,
+          "stddev": 0.37267799624996495,
+          "value": 0.16666666666666666
+        },
+        {
+          "budget_limit": 1,
+          "budget_unit": "items",
+          "name": "budget_utilization",
+          "sample_size": 24,
+          "seed": 20260101,
+          "stddev": 0.0,
+          "value": 1.0
+        }
+      ],
+      "strategy_id": "first-n"
+    },
+    {
+      "metrics": [
+        {
+          "budget_limit": 1,
+          "budget_unit": "items",
+          "name": "answer_support",
+          "sample_size": 24,
+          "seed": 20260101,
+          "stddev": 0.0,
+          "value": 1.0
+        },
+        {
+          "budget_limit": 1,
+          "budget_unit": "items",
+          "name": "selection_recall",
+          "sample_size": 24,
+          "seed": 20260101,
+          "stddev": 0.0,
+          "value": 1.0
+        },
+        {
+          "budget_limit": 1,
+          "budget_unit": "items",
+          "name": "selection_precision",
+          "sample_size": 24,
+          "seed": 20260101,
+          "stddev": 0.0,
+          "value": 1.0
+        },
+        {
+          "budget_limit": 1,
+          "budget_unit": "items",
+          "name": "budget_utilization",
+          "sample_size": 24,
+          "seed": 20260101,
+          "stddev": 0.0,
+          "value": 1.0
+        }
+      ],
+      "strategy_id": "keyword-overlap"
+    },
+    {
+      "metrics": [
+        {
+          "budget_limit": 1,
+          "budget_unit": "items",
+          "name": "answer_support",
+          "sample_size": 24,
+          "seed": 20260101,
+          "stddev": 0.0,
+          "value": 1.0
+        },
+        {
+          "budget_limit": 1,
+          "budget_unit": "items",
+          "name": "selection_recall",
+          "sample_size": 24,
+          "seed": 20260101,
+          "stddev": 0.0,
+          "value": 1.0
+        },
+        {
+          "budget_limit": 1,
+          "budget_unit": "items",
+          "name": "selection_precision",
+          "sample_size": 24,
+          "seed": 20260101,
+          "stddev": 0.0,
+          "value": 1.0
+        },
+        {
+          "budget_limit": 1,
+          "budget_unit": "items",
+          "name": "budget_utilization",
+          "sample_size": 24,
+          "seed": 20260101,
+          "stddev": 0.0,
+          "value": 1.0
+        }
+      ],
+      "strategy_id": "oracle"
+    }
+  ]
+}
