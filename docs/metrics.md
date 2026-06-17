@@ -430,6 +430,41 @@ the report always shows the underlying means alongside the differences. They
 describe specific compositions on a synthetic benchmark, not interactions in
 general.
 
+## Naturalistic metrics (Phase 8)
+
+Phase 8 scores the same strategies on deterministic, synthetic benchmarks shaped
+like realistic working information (email threads, meeting notes, support
+tickets, document revisions, memory logs). It reuses the selection, retention,
+and temporal metrics above and adds three contrasts that the naturalistic
+scenarios make meaningful. Each operates on sets of item ids: `S` selected, `C`
+current-truth, `D` superseded, `K` conflicting.
+
+**Current-truth support** — recall over the items that carry the *current*
+answer, as opposed to superseded or stale versions. Higher is better.
+
+```
+current_truth_support = |S ∩ C| / |C|          (defined when |C| > 0)
+```
+
+**Superseded-fact retention** — the fraction of superseded items (old versions a
+later decision or revision replaced) that survived selection. Lower is better.
+
+```
+superseded_fact_retention = |S ∩ D| / |D|      (defined when |D| > 0)
+```
+
+**Conflict selection rate** — the fraction of the selection that contradicts the
+current answer. Lower is better.
+
+```
+conflict_selection_rate = |S ∩ K| / |S|        (defined when |S| > 0)
+```
+
+Each function raises rather than returning a misleading zero when its
+denominator set is empty; the Phase 8 scorer records those undefined cases as
+`0.0` and notes the convention. These metrics describe specific synthetic
+scenarios, not real workplace context or real-world systems.
+
 ## Reporting conventions
 
 **Curves over points.** Where a budget is involved, report the
