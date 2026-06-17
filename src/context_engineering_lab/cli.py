@@ -19,6 +19,8 @@ A deliberately small CLI exposing three commands:
   per-experiment JSON artifacts plus a Markdown summary.
 * ``context-lab run-phase8`` — run the Phase 8 naturalistic experiments and write
   per-experiment JSON artifacts plus a Markdown summary.
+* ``context-lab run-phase9`` — re-run the Phase 2-8 suites and write their JSON
+  artifacts plus a cross-benchmark synthesis report.
 
 It is a skeleton: it proves the lab can be driven from the command line and
 produce reproducible artifacts, nothing more.
@@ -47,6 +49,7 @@ from context_engineering_lab.experiments.phase5 import phase5_experiments
 from context_engineering_lab.experiments.phase6 import phase6_experiments
 from context_engineering_lab.experiments.phase7 import phase7_experiments
 from context_engineering_lab.experiments.phase8 import phase8_experiments
+from context_engineering_lab.experiments.phase9 import all_phase_experiments
 from context_engineering_lab.reporting.persistence import write_result
 from context_engineering_lab.reporting.phase2_report import (
     render_report as render_phase2_report,
@@ -69,6 +72,9 @@ from context_engineering_lab.reporting.phase7_report import (
 from context_engineering_lab.reporting.phase8_report import (
     render_report as render_phase8_report,
 )
+from context_engineering_lab.reporting.phase9_report import (
+    render_from_results as render_phase9_report,
+)
 from context_engineering_lab.seeding import DEFAULT_SEED
 
 logger = logging.getLogger(__name__)
@@ -81,6 +87,7 @@ _DEFAULT_PHASE5_OUTPUT = "artifacts/phase5"
 _DEFAULT_PHASE6_OUTPUT = "artifacts/phase6"
 _DEFAULT_PHASE7_OUTPUT = "artifacts/phase7"
 _DEFAULT_PHASE8_OUTPUT = "artifacts/phase8"
+_DEFAULT_PHASE9_OUTPUT = "artifacts/phase9"
 
 
 def _configure_logging(verbose: bool) -> None:
@@ -134,6 +141,22 @@ def _run_suite(
         print(f"wrote {path} (run_id={result.metadata.run_id.value})")
     summary_path = destination / "summary.md"
     summary_path.write_text(render(results), encoding="utf-8")
+    print(f"wrote {summary_path}")
+    return 0
+
+
+def _run_phase9(output_dir: str) -> int:
+    runner = ExperimentRunner()
+    destination = Path(output_dir)
+    destination.mkdir(parents=True, exist_ok=True)
+    results: list[ExperimentResult] = []
+    for name, experiment in all_phase_experiments().items():
+        result = runner.run(experiment)
+        results.append(result)
+        path = write_result(result, destination / f"{name}.json")
+        print(f"wrote {path} (run_id={result.metadata.run_id.value})")
+    summary_path = destination / "synthesis.md"
+    summary_path.write_text(render_phase9_report(results), encoding="utf-8")
     print(f"wrote {summary_path}")
     return 0
 
@@ -242,6 +265,18 @@ def build_parser() -> argparse.ArgumentParser:
             f"(default: {_DEFAULT_PHASE8_OUTPUT})"
         ),
     )
+    phase9 = subparsers.add_parser(
+        "run-phase9",
+        help="run the Phase 2-8 suites and write a cross-benchmark synthesis",
+    )
+    phase9.add_argument(
+        "--output",
+        default=_DEFAULT_PHASE9_OUTPUT,
+        help=(
+            "directory for JSON artifacts and the synthesis report "
+            f"(default: {_DEFAULT_PHASE9_OUTPUT})"
+        ),
+    )
     return parser
 
 
@@ -288,6 +323,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         return _run_suite(
             str(args.output), phase8_experiments(), render_phase8_report
         )
+    if args.command == "run-phase9":
+        return _run_phase9(str(args.output))
     return 2  # pragma: no cover - argparse enforces a valid command
 
 
