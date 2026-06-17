@@ -111,3 +111,101 @@ def compare_pair(
         losses=losses,
         ties=ties,
     )
+
+
+@dataclass(frozen=True, slots=True)
+class DominanceRecord:
+    """A strategy's win/loss/tie totals against all other strategies.
+
+    Args:
+        strategy_id: The strategy.
+        wins: Total cells won across all opponents.
+        losses: Total cells lost across all opponents.
+        ties: Total cells tied across all opponents.
+        opponents: Opponents with at least one shared cell.
+    """
+
+    strategy_id: str
+    wins: int
+    losses: int
+    ties: int
+    opponents: int
+
+    @property
+    def comparisons(self) -> int:
+        """Total cell comparisons made across all opponents."""
+        return self.wins + self.losses + self.ties
+
+    @property
+    def net(self) -> int:
+        """Wins minus losses."""
+        return self.wins - self.losses
+
+    @property
+    def win_rate(self) -> float:
+        """Fraction of compared cells won, or ``0.0`` with no comparisons."""
+        total = self.comparisons
+        return self.wins / total if total else 0.0
+
+
+def dominance_matrix(
+    aggregation: Aggregation, *, eps: float = DEFAULT_EPS
+) -> dict[tuple[str, str], PairComparison]:
+    """Compare every ordered pair of distinct strategies.
+
+    Args:
+        aggregation: The aggregated cells.
+        eps: Tie threshold.
+
+    Returns:
+        A dict from ``(a, b)`` to the comparison of ``a`` against ``b``.
+    """
+    strategies = aggregation.strategies()
+    matrix: dict[tuple[str, str], PairComparison] = {}
+    for strategy_a in strategies:
+        for strategy_b in strategies:
+            if strategy_a == strategy_b:
+                continue
+            matrix[(strategy_a, strategy_b)] = compare_pair(
+                aggregation, strategy_a, strategy_b, eps=eps
+            )
+    return matrix
+
+
+def dominance_records(
+    aggregation: Aggregation, *, eps: float = DEFAULT_EPS
+) -> list[DominanceRecord]:
+    """Total each strategy's wins/losses/ties against all other strategies.
+
+    Args:
+        aggregation: The aggregated cells.
+        eps: Tie threshold.
+
+    Returns:
+        Records sorted by net (wins minus losses) descending, then by id.
+    """
+    records: list[DominanceRecord] = []
+    strategies = aggregation.strategies()
+    for strategy_a in strategies:
+        wins = losses = ties = opponents = 0
+        for strategy_b in strategies:
+            if strategy_a == strategy_b:
+                continue
+            comparison = compare_pair(aggregation, strategy_a, strategy_b, eps=eps)
+            if comparison.shared == 0:
+                continue
+            opponents += 1
+            wins += comparison.wins
+            losses += comparison.losses
+            ties += comparison.ties
+        records.append(
+            DominanceRecord(
+                strategy_id=strategy_a,
+                wins=wins,
+                losses=losses,
+                ties=ties,
+                opponents=opponents,
+            )
+        )
+    records.sort(key=lambda record: (-record.net, record.strategy_id))
+    return records
