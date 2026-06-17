@@ -9,6 +9,8 @@ A deliberately small CLI exposing three commands:
   per-experiment JSON artifacts plus a Markdown summary.
 * ``context-lab run-phase3`` — run the Phase 3 compression experiments and write
   per-experiment JSON artifacts plus a Markdown summary.
+* ``context-lab run-phase4`` — run the Phase 4 temporal experiments and write
+  per-experiment JSON artifacts plus a Markdown summary.
 
 It is a skeleton: it proves the lab can be driven from the command line and
 produce reproducible artifacts, nothing more.
@@ -32,12 +34,16 @@ from context_engineering_lab.core.results import ExperimentResult
 from context_engineering_lab.core.runner import ExperimentRunner
 from context_engineering_lab.experiments.phase2 import phase2_experiments
 from context_engineering_lab.experiments.phase3 import phase3_experiments
+from context_engineering_lab.experiments.phase4 import phase4_experiments
 from context_engineering_lab.reporting.persistence import write_result
 from context_engineering_lab.reporting.phase2_report import (
     render_report as render_phase2_report,
 )
 from context_engineering_lab.reporting.phase3_report import (
     render_report as render_phase3_report,
+)
+from context_engineering_lab.reporting.phase4_report import (
+    render_report as render_phase4_report,
 )
 from context_engineering_lab.seeding import DEFAULT_SEED
 
@@ -46,6 +52,7 @@ logger = logging.getLogger(__name__)
 _DEFAULT_OUTPUT = "artifacts/smoke-result.json"
 _DEFAULT_PHASE2_OUTPUT = "artifacts/phase2"
 _DEFAULT_PHASE3_OUTPUT = "artifacts/phase3"
+_DEFAULT_PHASE4_OUTPUT = "artifacts/phase4"
 
 
 def _configure_logging(verbose: bool) -> None:
@@ -152,6 +159,17 @@ def build_parser() -> argparse.ArgumentParser:
             f"(default: {_DEFAULT_PHASE3_OUTPUT})"
         ),
     )
+    phase4 = subparsers.add_parser(
+        "run-phase4", help="run the Phase 4 temporal experiment suite"
+    )
+    phase4.add_argument(
+        "--output",
+        default=_DEFAULT_PHASE4_OUTPUT,
+        help=(
+            "directory for JSON artifacts and the Markdown summary "
+            f"(default: {_DEFAULT_PHASE4_OUTPUT})"
+        ),
+    )
     return parser
 
 
@@ -177,6 +195,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.command == "run-phase3":
         return _run_suite(
             str(args.output), phase3_experiments(), render_phase3_report
+        )
+    if args.command == "run-phase4":
+        return _run_suite(
+            str(args.output), phase4_experiments(), render_phase4_report
         )
     return 2  # pragma: no cover - argparse enforces a valid command
 
