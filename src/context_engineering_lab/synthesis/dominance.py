@@ -209,3 +209,55 @@ def dominance_records(
         )
     records.sort(key=lambda record: (-record.net, record.strategy_id))
     return records
+
+
+def dominates(
+    aggregation: Aggregation,
+    strategy_a: str,
+    strategy_b: str,
+    *,
+    eps: float = DEFAULT_EPS,
+) -> bool:
+    """Whether ``a`` Pareto-dominates ``b`` on their shared quality cells.
+
+    True when they share at least one cell, ``a`` is never worse than ``b`` on a
+    shared cell, and ``a`` is strictly better on at least one.
+
+    Args:
+        aggregation: The aggregated cells.
+        strategy_a: The candidate dominator.
+        strategy_b: The candidate dominated strategy.
+        eps: Tie threshold.
+
+    Returns:
+        ``True`` if ``a`` dominates ``b``.
+    """
+    comparison = compare_pair(aggregation, strategy_a, strategy_b, eps=eps)
+    return comparison.shared > 0 and comparison.losses == 0 and comparison.wins > 0
+
+
+def non_dominated_strategies(
+    aggregation: Aggregation, *, eps: float = DEFAULT_EPS
+) -> list[str]:
+    """Return the strategies that no other strategy dominates.
+
+    Strategies evaluated on disjoint benchmarks share no cells and so cannot
+    dominate one another; both remain non-dominated. The result is sorted.
+
+    Args:
+        aggregation: The aggregated cells.
+        eps: Tie threshold.
+
+    Returns:
+        Sorted strategy ids on the non-dominated frontier.
+    """
+    strategies = aggregation.strategies()
+    frontier = [
+        candidate
+        for candidate in strategies
+        if not any(
+            other != candidate and dominates(aggregation, other, candidate, eps=eps)
+            for other in strategies
+        )
+    ]
+    return sorted(frontier)
