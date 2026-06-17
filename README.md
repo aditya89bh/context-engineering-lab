@@ -60,6 +60,72 @@ A fuller statement of intent lives in the [repository thesis](docs/thesis.md),
 the testable form in the [research questions](docs/research-questions.md), and the
 boundaries in the [non-goals](docs/non-goals.md).
 
+## Architecture and phase map
+
+Every experiment flows through one small, synchronous harness. A `Benchmark`
+generates `Case`s from a seed; a `Strategy` turns each case's candidate items into
+a budgeted `Context`; the benchmark scores that context; the `ExperimentRunner`
+sweeps strategies, seeds, and budgets and emits a serializable `ExperimentResult`
+that the reporting layer renders to Markdown.
+
+```
+            seed
+             │
+             ▼
+      ┌─────────────┐      candidates      ┌────────────┐      Context
+      │  Benchmark  │ ───────────────────► │  Strategy  │ ──────────────┐
+      │ generate()  │                      │  select()  │               │
+      └─────────────┘                      └────────────┘               ▼
+             ▲                                                    ┌────────────┐
+             │  Case + Context                                    │  Benchmark │
+             └──────────────────────────────────────────────────│ evaluate() │
+                                                                  └────────────┘
+                                                                         │ metrics
+      ┌──────────────────┐     ExperimentResult      ┌──────────────┐    │
+      │ ExperimentRunner │ ◄─────────────────────────│  aggregate   │ ◄──┘
+      │ strategies×seeds │ ──────────────────────────►   per-seed   │
+      │     ×budgets     │                            └──────────────┘
+      └──────────────────┘
+             │ JSON artifact + Markdown report
+             ▼
+        artifacts/
+```
+
+The work is layered in phases. Phases 2–6 build and isolate the **primitives**;
+Phase 7 studies how they **interact** when composed; Phase 8 moves to
+**naturalistic** scenarios; Phase 9 **synthesises** all prior results; Phase 10
+**stresses** them with perturbations; Phase 11 hardens the repository for release.
+
+```
+ Phase 0–1   Research design + core harness (items, budgets, runner, registry)
+     │
+     ▼
+ ┌──────────────────────── primitives (one benchmark family each) ───────────────────────┐
+ │ Phase 2 selection   Phase 3 compression   Phase 4 temporal                              │
+ │ Phase 5 retention   Phase 6 attention                                                   │
+ └───────────────────────────────────────────────────────────────────────────────────────┘
+     │ compose
+     ▼
+ Phase 7  interaction effects  (pipelines of existing primitives)
+     │ apply to realistic-shaped context
+     ▼
+ Phase 8  naturalistic benchmarks  (email / meeting / support / revision / memory)
+     │ read all result artifacts
+     ▼
+ Phase 9  cross-benchmark synthesis  (profiles, dominance, oracle gap, failure, stability)
+     │ stress-test the benchmarks
+     ▼
+ Phase 10 robustness  (distractor / contradiction / stale / corruption perturbations)
+     │ harden for publication
+     ▼
+ Phase 11 release hardening  (audit, docs, reproducibility, publication artifacts)
+```
+
+Each primitive family ships an `oracle` ceiling and content-blind baselines, so
+every result is read as a gap to the best achievable and a lift over doing nothing.
+See the [architecture](docs/architecture.md) and [harness](docs/harness.md) docs
+for detail.
+
 ## How this repository is organized
 
 This is a phased project. Phase 0 establishes the research design: shared
