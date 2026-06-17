@@ -181,3 +181,72 @@ def contradiction_injection(count: int = 4) -> ContradictionInjection:
     return ContradictionInjection(
         PerturbationConfig(perturbation_id="contradiction-injection", count=count)
     )
+
+
+def _min_timestamp(case: Case) -> float:
+    stamps = [c.timestamp for c in case.candidates if c.timestamp is not None]
+    return min(stamps) if stamps else 0.0
+
+
+def _is_stale(item: Item) -> bool:
+    return bool(item.metadata.get(STALE_KEY) or item.metadata.get(SUPERSEDED_KEY))
+
+
+class StaleAmplification(BasePerturbation):
+    """Repeat stale / superseded information so it recurs and crowds the budget.
+
+    The perturbation echoes the case's existing stale or superseded items (or, if
+    none exist, synthesises on-topic stale facts) ``config.count`` times. Each
+    echo carries ``stale=True``, ``superseded=True``, an old timestamp, and a high
+    ``frequency`` — modelling an obsolete fact that keeps resurfacing. This is
+    designed to tempt frequency- and recurrence-sensitive policies into retaining
+    superseded information, raising ``stale_selection_rate`` and
+    ``superseded_fact_retention`` without changing ground truth.
+    """
+
+    def apply(self, case: Case, rng: random.Random) -> PerturbationResult:
+        """Append ``config.count`` repeated stale items to the case."""
+        sources = [item for item in case.candidates if _is_stale(item)]
+        base_ts = _min_timestamp(case)
+        length = _avg_length(case)
+        added: list[Item] = []
+        for i in range(self._config.count):
+            meta = _base_metadata()
+            meta[STALE_KEY] = True
+            meta[SUPERSEDED_KEY] = True
+            meta[SALIENCE_KEY] = round(rng.uniform(0.0, 0.25), 4)
+            meta[FREQUENCY_KEY] = rng.randint(6, 12)
+            if sources:
+                content = sources[i % len(sources)].content
+            else:
+                content = f"{_query_terms(case, rng)} (previously)"
+            added.append(
+                Item(
+                    id=ItemId(f"stale-echo-{case.case_id}-{i}"),
+                    content=content,
+                    length=length,
+                    timestamp=base_ts - (i + 1),
+                    source="injected-stale",
+                    metadata=meta,
+                )
+            )
+        new_case = Case(
+            case_id=case.case_id,
+            task=case.task,
+            candidates=(*case.candidates, *added),
+            relevant_ids=case.relevant_ids,
+            required_ids=case.required_ids,
+        )
+        return PerturbationResult(
+            perturbation_id=self.id,
+            case=new_case,
+            items_added=len(added),
+            items_modified=0,
+        )
+
+
+def stale_amplification(count: int = 6) -> StaleAmplification:
+    """Return the default stale-amplification perturbation."""
+    return StaleAmplification(
+        PerturbationConfig(perturbation_id="stale-amplification", count=count)
+    )

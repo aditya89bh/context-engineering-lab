@@ -28,11 +28,13 @@ def default_perturbations() -> tuple[Perturbation, ...]:
     from context_engineering_lab.perturbations.injection import (
         contradiction_injection,
         distractor_injection,
+        stale_amplification,
     )
 
     return (
         distractor_injection(),
         contradiction_injection(),
+        stale_amplification(),
     )
 
 
