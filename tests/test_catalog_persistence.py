@@ -7,6 +7,7 @@ from pathlib import Path
 from context_engineering_lab.catalog import (
     build_benchmark_registry,
     build_compressor_registry,
+    build_retention_policy_registry,
     build_strategy_registry,
 )
 from context_engineering_lab.core.experiment import Experiment
@@ -42,6 +43,9 @@ def test_catalog_contains_builtins() -> None:
         "recent-signal",
         "old-signal",
         "drift-heavy",
+        "low-noise-retention",
+        "stale-accumulation",
+        "harmful-memory",
     } <= set(benchmarks.names())
 
 
@@ -55,6 +59,18 @@ def test_compressor_registry_contains_builtins() -> None:
         "sentence-boundary",
         "oracle-compression",
     } <= set(compressors.names())
+
+
+def test_retention_policy_registry_contains_builtins() -> None:
+    policies = build_retention_policy_registry()
+    assert {
+        "retain-all",
+        "recency-retention",
+        "frequency-retention",
+        "salience-retention",
+        "hybrid-retention-0.5-0.3-0.2",
+        "oracle-retention",
+    } <= set(policies.names())
 
 
 def test_result_persistence_round_trip(tmp_path: Path) -> None:
