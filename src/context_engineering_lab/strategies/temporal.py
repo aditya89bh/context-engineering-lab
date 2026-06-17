@@ -34,7 +34,7 @@ from context_engineering_lab.strategies._budget_fill import fill_within_budget
 from context_engineering_lab.strategies.oracle import ORACLE_RELEVANCE_KEY
 
 _OLDEST = float("-inf")
-_NEWEST = float("inf")
+_TIMELESS_AGE = float("inf")
 
 #: Default number of timeline positions kept by the window strategies.
 DEFAULT_WINDOW = 5
@@ -132,7 +132,7 @@ class SlidingWindowSelection:
         ]
         ordered = sorted(
             in_window,
-            key=lambda item: (-item_age(item, now), str(item.id)),
+            key=lambda item: (item_age(item, now), str(item.id)),
         )
         return fill_within_budget(ordered, budget)
 
@@ -246,7 +246,7 @@ class AgeWeightedSelection:
 
         ordered = sorted(
             candidates,
-            key=lambda item: (-weight(item), -item_age(item, now), str(item.id)),
+            key=lambda item: (-weight(item), item_age(item, now), str(item.id)),
         )
         return fill_within_budget(ordered, budget)
 
@@ -293,7 +293,7 @@ class OracleTemporalSelection:
             candidates,
             key=lambda item: (
                 0 if is_relevant(item) else 1,
-                -item_age(item, now, missing=_NEWEST),
+                item_age(item, now, missing=_TIMELESS_AGE),
                 str(item.id),
             ),
         )
