@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite it as below."
+title: "context-engineering-lab"
+abstract: >-
+  A research-practice repository investigating how intelligent systems decide
+  what context to retain, compress, retrieve, prioritize, and forget. It provides
+  deterministic, oracle-anchored benchmarks for context-engineering primitives
+  (selection, compression, temporal relevance, retention, attention), their
+  compositions, naturalistic-shaped scenarios, a cross-benchmark synthesis, and a
+  robustness/perturbation analysis.
+type: software
+authors:
+  - given-names: Aditya
+    email: aditya89bh@gmail.com
+repository-code: "https://github.com/aditya89bh/context-engineering-lab"
+url: "https://github.com/aditya89bh/context-engineering-lab"
+license: MIT
+keywords:
+  - context-engineering
+  - salience
+  - compression
+  - retrieval
+  - memory
+  - attention
+  - retention
+  - robustness
+  - reproducibility
+version: 0.0.0
+date-released: "2026-06-17"
