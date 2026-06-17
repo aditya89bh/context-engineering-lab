@@ -54,6 +54,12 @@ def test_catalog_contains_builtins() -> None:
         "balanced-interaction",
         "memory-pressure",
         "noisy-context",
+        "email-old-signal",
+        "email-conflict-heavy",
+        "meeting-action-items",
+        "support-stale-fix",
+        "revision-current-truth",
+        "memory-log-noisy",
     } <= set(benchmarks.names())
 
 

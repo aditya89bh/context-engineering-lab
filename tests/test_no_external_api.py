@@ -1,8 +1,9 @@
 """Guard test: the lab code uses no network or LLM dependencies.
 
 Compression (Phase 3), temporal (Phase 4), retention (Phase 5), attention
-(Phase 6), and interaction (Phase 7) work must be deterministic and local. This
-test scans the source modules for imports of networking or LLM client libraries,
+(Phase 6), interaction (Phase 7), and naturalistic (Phase 8) work must be
+deterministic and local. This test scans the source modules for imports of
+networking or LLM client libraries,
 failing if any appear. It is a coarse guard, not a sandbox, but it catches
 accidental introduction of an external dependency.
 """
@@ -95,3 +96,25 @@ def test_guard_covers_the_interaction_modules() -> None:
     assert "interaction_metrics.py" in names
     assert "interaction.py" in names  # the benchmark
     assert "compositions.py" in names  # the built-in compositions
+
+
+def test_guard_covers_the_naturalistic_modules() -> None:
+    names = {path.name for path in _python_files()}
+    assert "records.py" in names  # the naturalistic engine and record helpers
+    assert "naturalistic_metrics.py" in names
+    assert "email.py" in names  # a benchmark family
+    assert "phase8.py" in names  # the experiments
+    assert "phase8_report.py" in names  # the report
+
+
+def test_naturalistic_package_ships_no_data_fixtures() -> None:
+    """The naturalistic benchmarks are generated, not loaded from data files."""
+    naturalistic = _PACKAGE_ROOT / "benchmarks" / "naturalistic"
+    non_python = [
+        path.name
+        for path in naturalistic.rglob("*")
+        if path.is_file()
+        and path.suffix != ".py"
+        and "__pycache__" not in path.parts
+    ]
+    assert not non_python, f"unexpected data fixtures present: {non_python}"
