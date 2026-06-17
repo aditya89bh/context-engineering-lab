@@ -207,6 +207,57 @@ described by where it sits across retention, ratio, distractor retention, and
 utilization — for example, the oracle ceiling attains full retention at a very
 low ratio because it keeps only the target facts.
 
+### Temporal metrics (Phase 4)
+
+The temporal benchmark (`temporal-context-relevance`) places items along a
+timeline and asks which to keep under a budget. These metrics describe *where in
+time* a selection lands, which the set-overlap metrics above ignore. For a single
+case, let:
+
+- `now` = the largest timestamp (the timeline's reference time).
+- `age(x) = now - timestamp(x)` = the age of item `x` (`0` for the newest item).
+- `span` = the timeline span used to normalize ages (`now - min timestamp`).
+- `S` = the selected items; `R` = the ground-truth relevant items.
+- `stale` = the items flagged stale (old, no longer relevant).
+- `[a_lo, a_hi]` = the closed interval of ages spanned by `R` (its age band).
+
+**Temporal relevance** — fraction of the selection whose age falls in the
+relevant age band. An item can be in the right *era* without itself being the
+signal, so this is distinct from precision.
+
+```
+temporal_relevance = |{ x ∈ S : a_lo ≤ age(x) ≤ a_hi }| / |S|   (defined when |S| > 0)
+```
+
+**Stale selection rate** — fraction of the selection that is stale. Lower is
+better: it penalizes keeping dated look-alikes.
+
+```
+stale_selection_rate = |S ∩ stale| / |S|        (defined when |S| > 0)
+```
+
+**Age of selected context** — mean normalized age of the selection. Describes how
+old, on average, the kept context is.
+
+```
+age_of_selected_context = mean_{x ∈ S} age(x) / span   (defined when |S| > 0, span > 0)
+```
+
+**Relevant age gap** — normalized distance in time between the average selected
+item and the average relevant item. `0` means the selection is temporally aligned
+with where relevance actually is; larger means the selector is looking in the
+wrong era.
+
+```
+relevant_age_gap = | mean_{x ∈ S} age(x) − mean_{x ∈ R} age(x) | / span
+                                                 (defined when |S| > 0, |R| > 0, span > 0)
+```
+
+These are deliberately *not* combined into a composite score. A temporal strategy
+is described by where it sits across answer support, the age gap, the stale rate,
+and budget utilization — for example, oldest-first attains a small age gap on an
+old signal precisely where recency's gap is largest.
+
 ## Reporting conventions
 
 **Curves over points.** Where a budget is involved, report the
