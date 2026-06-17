@@ -58,27 +58,29 @@ Implementation phases follow the [roadmap](docs/roadmap.md).
 | [Phase 4 summary](docs/phase-4-summary.md) | The first temporal experiments and what they do not claim |
 | [Retention benchmarks](docs/retention-benchmarks.md) | The Phase 5 synthetic retention benchmark and presets |
 | [Phase 5 summary](docs/phase-5-summary.md) | The first forgetting experiments and what they do not claim |
+| [Attention benchmarks](docs/attention-benchmarks.md) | The Phase 6 synthetic attention benchmark and presets |
+| [Phase 6 summary](docs/phase-6-summary.md) | The first allocation experiments and what they do not claim |
 | [Roadmap](docs/roadmap.md) | Phase plan and current status |
 | [ADRs](docs/adr/) | Architecture decision records |
 
 ## Status
 
-**Phase 5 — Forgetting and retention.** Building on the Phase 1 harness and the
-selection, compression, and temporal work, the lab now runs controlled
-experiments on *forgetting as a policy*: which information should survive a memory
-budget. It ships six retention policies (`retain-all`, `recency-retention`,
-`frequency-retention`, `salience-retention`, a `hybrid-retention` blend, and an
-`oracle-retention` ceiling), a synthetic `retention-utility-preservation`
-benchmark with three presets (`low-noise-retention`, `stale-accumulation`,
-`harmful-memory`), forgetting metrics, four reproducible experiments, and a
-Markdown report. Phase 5 studies the retention *decision* only — **no memory
-store, persistence, or eviction schedule** — with no external API and no LLM, and
-treats forgetting as distinct from temporal relevance (old can be useful; recent
-can be harmful). Results are **early and benchmark-specific**: they use controlled
-synthetic data, `oracle-retention` is an upper bound (not deployable), and nothing
-here is a general claim about memory systems. See the
-[Phase 5 summary](docs/phase-5-summary.md) and
-[retention benchmarks](docs/retention-benchmarks.md).
+**Phase 6 — Attention allocation.** Building on the Phase 1 harness and the
+selection, compression, temporal, and retention work, the lab now runs controlled
+experiments on *attention allocation*: how a fixed budget should be split across
+competing sources before selection. It ships six allocators (`uniform`,
+`proportional`, `salience`, a quality-led `adaptive`, `winner-take-most`, and an
+`oracle-allocation` ceiling), a synthetic `attention-source-allocation` benchmark
+with three presets (`balanced-sources`, `concentrated-signal`,
+`noisy-dominant-source`), allocation metrics, four reproducible experiments, and a
+Markdown report. Phase 6 studies the budget *split* only — **no scheduler, agent
+loop, or event system** — with no external API and no LLM, and treats allocation
+as distinct from selection (the inner fill is identical across allocators).
+Results are **early and benchmark-specific**: they use controlled synthetic data,
+`oracle-allocation` is an upper bound (not deployable), and nothing here is a
+general claim about attention mechanisms. See the
+[Phase 6 summary](docs/phase-6-summary.md) and
+[attention benchmarks](docs/attention-benchmarks.md).
 
 ## Running the harness
 
@@ -89,6 +91,7 @@ context-lab run-phase2 --output artifacts/phase2   # Phase 2 selection suite + r
 context-lab run-phase3 --output artifacts/phase3   # Phase 3 compression suite + report
 context-lab run-phase4 --output artifacts/phase4   # Phase 4 temporal suite + report
 context-lab run-phase5 --output artifacts/phase5   # Phase 5 retention suite + report
+context-lab run-phase6 --output artifacts/phase6   # Phase 6 attention suite + report
 ```
 
 ## Development

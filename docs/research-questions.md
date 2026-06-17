@@ -111,6 +111,12 @@ observation that would count as an answer (including a clear negative result).
   salience-proportional, and knapsack allocation of a fixed budget.
 - **Answer:** An allocation wins if it raises task success at equal total budget;
   report whether the ranking is stable across budget sizes.
+- **Phase 6 status:** *begun.* On `attention-source-allocation`, salience-
+  proportional allocation beats uniform when signal is concentrated, but is fooled
+  by a `noisy-dominant-source` whose distractors carry inflated salience; a
+  capacity-aware quality-led `adaptive` allocator avoids that trap. No single
+  deployable allocator wins across all three presets, and uniform is hard to beat
+  when sources are balanced. Synthetic and benchmark-specific.
 
 ### RQ9 — How does selection degrade as distractors increase?
 
@@ -223,6 +229,25 @@ observation that would count as an answer (including a clear negative result).
   `harmful-memory` preset every deployable policy falls well short of it. Whether
   the hybrid blend beats the best single signal varies by preset and is measured,
   not assumed. Deterministic, synthetic, and benchmark-specific.
+
+### RQ17 — When does uniform attention allocation fail, and what should replace it?
+
+- **Taxonomy:** Attention budget × Comparison
+- **Test:** Across sources that vary in size, quality, and signal concentration —
+  including a large source whose salience overstates its signal — compare uniform,
+  size-proportional, salience-proportional, capacity-aware quality-led, and
+  winner-take-most splits of a fixed budget; measure signal capture, wasted
+  attention, and source coverage as concentration and quality imbalance vary.
+- **Answer:** Uniform "fails" when sources differ in value: report the regimes
+  where it wastes budget on weak sources. A replacement "wins" if it raises signal
+  capture at equal budget without being baited by the noisy source; no deployable
+  allocator should match the oracle, which reads ground-truth signal counts.
+- **Phase 6 status:** *begun.* On `attention-source-allocation`, uniform is
+  competitive only on `balanced-sources`; on `concentrated-signal` it wastes
+  budget on near-empty sources while winner-take-most and the quality-led adaptive
+  allocator approach the oracle; on `noisy-dominant-source`, size- and
+  salience-based splits pour budget into the trap while the adaptive allocator
+  resists it. Deterministic, synthetic, and benchmark-specific.
 
 ---
 

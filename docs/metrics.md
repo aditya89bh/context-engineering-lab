@@ -323,6 +323,65 @@ policy is described by where it sits across these rates — for example, on a
 low-noise benchmark a salience policy approaches the oracle's forgetting
 efficiency while a frequency policy retains high-frequency harm.
 
+### Attention-allocation metrics (Phase 6)
+
+The attention benchmark (`attention-source-allocation`) splits a budget across
+several **sources** before a fixed inner selection fills each share. Phase 6
+studies allocation as a policy; these metrics describe how well a budget split
+converted into captured signal. Allocation is **distinct from selection**: the
+inner selection is identical for every allocator, so these metrics isolate the
+quality of the split. For a single case, let:
+
+- `G` = the ground-truth signal items across all sources.
+- `S` = the items actually placed in context (the union of filled shares).
+- `B` = the total budget (in items).
+- `C` = the set of sources that contributed at least one selected item;
+  `srcs` = all sources in the case.
+
+**Allocation efficiency** — fraction of selected items that are signal. The
+precision of where attention landed.
+
+```
+allocation_efficiency = |S ∩ G| / |S|          (defined when |S| > 0)
+```
+
+**Signal capture rate** — fraction of all available signal captured. The recall
+of the allocation across every source.
+
+```
+signal_capture_rate = |S ∩ G| / |G|            (defined when |G| > 0)
+```
+
+**Wasted attention rate** — fraction of the budget that did not become signal.
+Lower is better. Because `|S ∩ G| ≤ |S| ≤ B`, this captures budget lost both to
+selected distractors and to capacity an allocator handed a source that could not
+fill it.
+
+```
+wasted_attention_rate = (B − |S ∩ G|) / B      (defined when B > 0)
+```
+
+**Source coverage** — fraction of sources that contributed a selected item. A
+descriptor of spread, not a quality score: concentrating on the right source can
+beat broad coverage.
+
+```
+source_coverage = |C ∩ srcs| / |srcs|          (defined when |srcs| > 0)
+```
+
+**Budget utilization** — fraction of the budget actually filled (reused from the
+compression metrics). Below `1` when an allocator wasted budget on a source too
+small to fill its share.
+
+```
+budget_utilization = |S| / B                   (defined when B > 0)
+```
+
+These are deliberately *not* combined into a single quality score. An allocator
+is described by where it sits across capture, efficiency, waste, and coverage —
+for example, on a concentrated signal a winner-take-most split approaches the
+oracle's capture while uniform wastes budget on near-empty sources.
+
 ## Reporting conventions
 
 **Curves over points.** Where a budget is involved, report the

@@ -8,6 +8,36 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Phase 6 — Attention allocation.**
+  - An attention interface (`core.attention`): a `Source` grouping, an
+    `AttentionAllocator` protocol, the `AllocationDecision` / `AllocationStats` /
+    `AllocationResult` records, an observable `source_quality` key, a
+    `group_sources` helper, and an `AllocatorStrategy` adapter that runs
+    allocators through the existing experiment runner. Kept minimal — no
+    scheduler or event loop.
+  - Six allocators (`attention`): `uniform-allocation`, `proportional-allocation`
+    (by size), `salience-allocation` (by source salience), `adaptive-allocation`
+    (quality-led, capacity-aware), `winner-take-most` (concentrates on the top
+    source), and an `oracle-allocation` ceiling (reads ground-truth signal
+    counts; documented as not deployable).
+  - The `attention-source-allocation` synthetic benchmark whose sources mix
+    signal and distractors and expose an observable quality score and salience
+    profile, with knobs for source count, source size, quality imbalance, signal
+    concentration, and an optional large/salient/low-quality trap source.
+  - Three benchmark presets: `balanced-sources`, `concentrated-signal`,
+    `noisy-dominant-source`.
+  - Allocation metrics (`core.attention_metrics`): `allocation_efficiency`,
+    `signal_capture_rate`, `wasted_attention_rate`, and `source_coverage`
+    (reusing `budget_utilization`), with formulas in `docs/metrics.md`.
+  - Four reproducible experiments (`attention-balanced`,
+    `attention-concentrated`, `attention-noisy-dominant`,
+    `attention-budget-sweep`) and a Markdown report.
+  - A `context-lab run-phase6` command and an attention-allocator registry; the
+    no-network/LLM guard test now also covers the attention package.
+  - Documentation: `docs/attention-benchmarks.md`, `docs/phase-6-summary.md`,
+    allocation metric definitions, a Phase 6 status note on RQ8, and a new RQ17
+    (when uniform allocation fails). The roadmap marks Phase 6 complete.
+
 - **Phase 5 — Forgetting and retention.**
   - A retention interface (`core.retention`): a `RetentionPolicy` protocol, the
     `RetentionDecision` / `RetentionStats` / `RetentionResult` records, an

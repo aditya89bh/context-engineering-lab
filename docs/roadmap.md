@@ -125,12 +125,31 @@ from temporal relevance (old can be useful; recent can be harmful). Produces
 controlled, benchmark-specific observations only — not general claims about memory
 systems; `oracle-retention` is an upper bound, not deployable.
 
-## Phase 6 — Attention budget allocation (planned)
+## Phase 6 — Attention allocation (complete)
 
-**Goal:** study how a fixed budget should be split.
+**Goal:** study how a fixed budget should be split across competing sources.
 
-- Uniform vs. salience-proportional vs. knapsack allocation.
-- Interaction between allocation and selection.
+- Allocation strategies spanning a `uniform` baseline, size-`proportional`,
+  `salience`-proportional, a capacity-aware `adaptive` policy, a
+  `winner-take-most` concentrator, and an `oracle-allocation` ceiling that reads
+  ground-truth signal counts.
+- The synthetic `attention-source-allocation` benchmark with three presets
+  (`balanced-sources`, `concentrated-signal`, `noisy-dominant-source`) whose
+  sources mix signal and distractors and expose an observable quality score and
+  salience profile, and allocation metrics (allocation efficiency, signal capture
+  rate, wasted attention rate, source coverage, budget utilization).
+- Signal-capture, wasted-attention, and budget-performance tables and a Markdown
+  report via `context-lab run-phase6`.
+
+See [phase-6-summary.md](phase-6-summary.md) and
+[attention-benchmarks.md](attention-benchmarks.md).
+
+**Status:** complete. Studies allocation as a one-shot budget *split* across
+sources before selection — no scheduler, agent loop, or event system. Allocation
+is treated as distinct from selection (the inner fill is identical across
+allocators). Produces controlled, benchmark-specific observations only — not
+general claims about attention mechanisms; `oracle-allocation` is an upper bound,
+not deployable.
 
 ## Phase 7 — Robustness (planned)
 
