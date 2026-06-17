@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass
+from statistics import fmean
 
 from context_engineering_lab.synthesis.aggregation import (
     Aggregation,
@@ -23,7 +24,11 @@ from context_engineering_lab.synthesis.dominance import (
     CellKey,
     oriented_quality_cells,
 )
-from context_engineering_lab.synthesis.profiles import is_oracle_id
+from context_engineering_lab.synthesis.profiles import (
+    is_oracle_id,
+    oracle_primary_score,
+    primary_scores,
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -112,3 +117,81 @@ def gaps_for_strategy(
         )
     gaps.sort(key=lambda g: (g.benchmark_id, g.metric, g.budget_limit))
     return gaps
+
+
+@dataclass(frozen=True, slots=True)
+class OracleSummary:
+    """An oracle-normalized summary of one strategy.
+
+    Args:
+        strategy_id: The strategy summarised.
+        mean_gap: Mean gap across all quality cells with an oracle, or ``None``.
+        mean_primary_gap: Mean primary-metric gap across benchmarks, or ``None``.
+        normalized: Mean of ``strategy_primary / oracle_primary`` across
+            benchmarks (1.0 means it matches the oracle), or ``None``.
+        cell_count: Number of quality cells that had an oracle to compare to.
+    """
+
+    strategy_id: str
+    mean_gap: float | None
+    mean_primary_gap: float | None
+    normalized: float | None
+    cell_count: int
+
+
+def oracle_summary(aggregation: Aggregation, strategy_id: str) -> OracleSummary:
+    """Build an oracle-normalized summary for one strategy.
+
+    Args:
+        aggregation: The aggregated cells.
+        strategy_id: The strategy to summarise.
+
+    Returns:
+        The :class:`OracleSummary`.
+    """
+    gaps = gaps_for_strategy(aggregation, strategy_id)
+    mean_gap = fmean(gap.gap for gap in gaps) if gaps else None
+
+    primary_gaps: list[float] = []
+    ratios: list[float] = []
+    for benchmark_id, (_metric, score) in primary_scores(
+        aggregation, strategy_id
+    ).items():
+        ceiling = oracle_primary_score(aggregation, benchmark_id)
+        if ceiling is None:
+            continue
+        primary_gaps.append(ceiling - score)
+        if ceiling > 0:
+            ratios.append(score / ceiling)
+
+    return OracleSummary(
+        strategy_id=strategy_id,
+        mean_gap=mean_gap,
+        mean_primary_gap=fmean(primary_gaps) if primary_gaps else None,
+        normalized=fmean(ratios) if ratios else None,
+        cell_count=len(gaps),
+    )
+
+
+def oracle_summaries(aggregation: Aggregation) -> list[OracleSummary]:
+    """Summaries for every strategy, best normalized score first.
+
+    Strategies without a normalized score (no oracle to compare to) sort last.
+
+    Args:
+        aggregation: The aggregated cells.
+
+    Returns:
+        The per-strategy summaries.
+    """
+    summaries = [
+        oracle_summary(aggregation, strategy_id)
+        for strategy_id in aggregation.strategies()
+    ]
+    summaries.sort(
+        key=lambda s: (
+            -(s.normalized if s.normalized is not None else -math.inf),
+            s.strategy_id,
+        )
+    )
+    return summaries
