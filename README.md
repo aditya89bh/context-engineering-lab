@@ -168,6 +168,40 @@ Implementation phases follow the [roadmap](docs/roadmap.md).
 | [Roadmap](docs/roadmap.md) | Phase plan and current status |
 | [ADRs](docs/adr/) | Architecture decision records |
 
+## Benchmark map
+
+The catalog registers **24 research benchmark presets** across eight families
+(plus a `harness-smoke` sanity check), exercised by **11 strategies**,
+**6 compressors**, **6 retention policies**, **6 attention allocators**,
+**8 compositions**, and **5 robustness perturbations**. Run `context-lab list`
+to print every registered id.
+
+| Family | Phase | Presets |
+| --- | --- | --- |
+| Selection | 2 | `easy-selection`, `position-biased-selection`, `high-distractor-selection` |
+| Compression | 3 | `easy-compression`, `late-signal-compression`, `dense-distractor-compression` |
+| Temporal | 4 | `recent-signal`, `old-signal`, `drift-heavy` |
+| Retention | 5 | `low-noise-retention`, `stale-accumulation`, `harmful-memory` |
+| Attention | 6 | `balanced-sources`, `concentrated-signal`, `noisy-dominant-source` |
+| Interaction | 7 | `balanced-interaction`, `memory-pressure`, `noisy-context` |
+| Naturalistic | 8 | `email-old-signal`, `email-conflict-heavy`, `meeting-action-items`, `support-stale-fix`, `revision-current-truth`, `memory-log-noisy` |
+
+Phase 9 reads the artifacts these produce and synthesises them; Phase 10 wraps the
+Phase 8 presets in perturbations (`distractor-injection`, `contradiction-injection`,
+`stale-amplification`, `source-quality-corruption`, `salience-corruption`).
+
+## Quickstart
+
+```bash
+pip install -e ".[dev]"          # install the package and dev tooling
+context-lab list                 # see every registered strategy and benchmark
+context-lab run-phase2 --output artifacts/phase2
+cat artifacts/phase2/summary.md  # read the generated Markdown report
+```
+
+Every run is deterministic: the same command regenerates byte-identical artifacts.
+See [docs/reproducibility.md](docs/reproducibility.md) for the full protocol.
+
 ## Status
 
 **Phase 10 — Robustness and perturbation analysis.** Building on the Phase 8
