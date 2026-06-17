@@ -7,6 +7,7 @@ from pathlib import Path
 from context_engineering_lab.catalog import (
     build_attention_allocator_registry,
     build_benchmark_registry,
+    build_composition_registry,
     build_compressor_registry,
     build_retention_policy_registry,
     build_strategy_registry,
@@ -50,6 +51,9 @@ def test_catalog_contains_builtins() -> None:
         "balanced-sources",
         "concentrated-signal",
         "noisy-dominant-source",
+        "balanced-interaction",
+        "memory-pressure",
+        "noisy-context",
     } <= set(benchmarks.names())
 
 
@@ -87,6 +91,20 @@ def test_attention_allocator_registry_contains_builtins() -> None:
         "winner-take-most-0.7",
         "oracle-allocation",
     } <= set(allocators.names())
+
+
+def test_composition_registry_contains_builtins() -> None:
+    compositions = build_composition_registry()
+    assert {
+        "temporal->selection",
+        "attention->selection",
+        "retention->attention",
+        "temporal->retention",
+        "retention->selection",
+        "selection->compression",
+        "retention->compression",
+        "oracle-pipeline",
+    } <= set(compositions.names())
 
 
 def test_result_persistence_round_trip(tmp_path: Path) -> None:

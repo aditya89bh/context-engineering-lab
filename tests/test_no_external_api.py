@@ -1,10 +1,10 @@
 """Guard test: the lab code uses no network or LLM dependencies.
 
-Compression (Phase 3), temporal (Phase 4), retention (Phase 5), and attention
-(Phase 6) work must be deterministic and local. This test scans the source
-modules for imports of networking or LLM client libraries, failing if any appear.
-It is a coarse guard, not a sandbox, but it catches accidental introduction of an
-external dependency.
+Compression (Phase 3), temporal (Phase 4), retention (Phase 5), attention
+(Phase 6), and interaction (Phase 7) work must be deterministic and local. This
+test scans the source modules for imports of networking or LLM client libraries,
+failing if any appear. It is a coarse guard, not a sandbox, but it catches
+accidental introduction of an external dependency.
 """
 
 from __future__ import annotations
@@ -25,6 +25,8 @@ _SCANNED_DIRS = (
     _PACKAGE_ROOT / "strategies",
     _PACKAGE_ROOT / "core",
 )
+
+_SCANNED_FILES = (_PACKAGE_ROOT / "compositions.py",)
 
 _FORBIDDEN = (
     "import requests",
@@ -47,6 +49,7 @@ def _python_files() -> list[Path]:
     files: list[Path] = []
     for directory in _SCANNED_DIRS:
         files.extend(sorted(directory.rglob("*.py")))
+    files.extend(path for path in _SCANNED_FILES if path.exists())
     return files
 
 
@@ -84,3 +87,11 @@ def test_guard_covers_the_attention_modules() -> None:
     assert "attention.py" in names  # attention interface and benchmark
     assert "attention_metrics.py" in names
     assert "adaptive.py" in names  # an allocator
+
+
+def test_guard_covers_the_interaction_modules() -> None:
+    names = {path.name for path in _python_files()}
+    assert "composition.py" in names  # the composition abstraction
+    assert "interaction_metrics.py" in names
+    assert "interaction.py" in names  # the benchmark
+    assert "compositions.py" in names  # the built-in compositions
