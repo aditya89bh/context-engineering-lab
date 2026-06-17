@@ -94,6 +94,7 @@ pretty = true
 [tool.pytest.ini_options]
 minversion = "8.0"
 testpaths = ["tests"]
+pythonpath = ["tests"]
 addopts = "-ra --strict-markers --strict-config"
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
