@@ -12,6 +12,7 @@ from context_engineering_lab.benchmarks.compression_presets import (
 )
 from context_engineering_lab.benchmarks.selection_presets import all_selection_presets
 from context_engineering_lab.benchmarks.smoke import SmokeBenchmark
+from context_engineering_lab.benchmarks.temporal_presets import all_temporal_presets
 from context_engineering_lab.compression import default_compressors
 from context_engineering_lab.core.benchmark import Benchmark
 from context_engineering_lab.core.compression import Compressor
@@ -25,6 +26,13 @@ from context_engineering_lab.strategies.positional import (
 )
 from context_engineering_lab.strategies.random_selection import RandomSelection
 from context_engineering_lab.strategies.recency import RecencySelection
+from context_engineering_lab.strategies.temporal import (
+    AgeWeightedSelection,
+    FixedWindowSelection,
+    OldestFirstSelection,
+    OracleTemporalSelection,
+    SlidingWindowSelection,
+)
 
 
 def build_strategy_registry() -> Registry[Strategy]:
@@ -37,6 +45,11 @@ def build_strategy_registry() -> Registry[Strategy]:
         RandomSelection(),
         KeywordOverlapSelection(),
         OracleSelection(),
+        OldestFirstSelection(),
+        SlidingWindowSelection(),
+        FixedWindowSelection(),
+        AgeWeightedSelection(),
+        OracleTemporalSelection(),
     )
     for strategy in strategies:
         registry.register(str(strategy.id), strategy)
@@ -50,6 +63,7 @@ def build_benchmark_registry() -> Registry[Benchmark]:
         SmokeBenchmark(),
         *all_selection_presets(),
         *all_compression_presets(),
+        *all_temporal_presets(),
     )
     for benchmark in benchmarks:
         registry.register(str(benchmark.id), benchmark)
