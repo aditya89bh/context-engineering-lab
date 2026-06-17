@@ -87,14 +87,6 @@ class RobustnessAggregation:
         """Comparisons belonging to one stress group."""
         return [row for row in self.comparisons if row.group == group]
 
-    def for_perturbation(self, perturbation_id: str) -> list[GroupComparison]:
-        """Comparisons for one perturbation id."""
-        return [
-            row
-            for row in self.comparisons
-            if row.comparison.perturbation_id == perturbation_id
-        ]
-
 
 def _oriented(metric: str, value: float) -> float:
     if direction(metric) is Direction.LOWER_IS_BETTER:
