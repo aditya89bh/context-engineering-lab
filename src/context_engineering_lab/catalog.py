@@ -17,6 +17,9 @@ from context_engineering_lab.benchmarks.compression_presets import (
 from context_engineering_lab.benchmarks.interaction_presets import (
     all_interaction_presets,
 )
+from context_engineering_lab.benchmarks.naturalistic import (
+    all_naturalistic_presets,
+)
 from context_engineering_lab.benchmarks.retention_presets import (
     all_retention_presets,
 )
@@ -81,6 +84,7 @@ def build_benchmark_registry() -> Registry[Benchmark]:
         *all_retention_presets(),
         *all_attention_presets(),
         *all_interaction_presets(),
+        *all_naturalistic_presets(),
     )
     for benchmark in benchmarks:
         registry.register(str(benchmark.id), benchmark)
