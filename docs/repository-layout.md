@@ -1,48 +1,45 @@
 # Repository layout
 
 This document describes where things live and the reasoning behind the layout.
-Some directories below are introduced in later phases; they are listed here so
-the intended structure is clear from the start. The current state of the tree
-reflects Phase 0.
+It reflects the repository as built through Phase 11 (release hardening).
 
-## Current tree (Phase 0)
+## Tree
 
 ```
 context-engineering-lab/
-├── docs/                     # research design: thesis, taxonomy, metrics, ADRs
-│   └── adr/                  # architecture decision records
+├── docs/                       # research design, methodology, and per-phase write-ups
+│   └── adr/                    # architecture decision records
 ├── src/
 │   └── context_engineering_lab/
-│       ├── __init__.py       # public API surface
-│       ├── py.typed          # PEP 561 marker: the package ships types
-│       └── seeding.py        # reproducibility foundations
-├── tests/                    # mirrors src/ ; one test module per source module
-├── .github/workflows/        # continuous integration
-├── pyproject.toml            # single source of truth for build + tooling config
-├── README.md                 # front door and document index
-├── CONTRIBUTING.md           # how to propose and add work
-├── CODE_OF_CONDUCT.md        # community expectations
-├── CHANGELOG.md              # human-readable history
+│       ├── __init__.py         # public API surface and version
+│       ├── py.typed            # PEP 561 marker: the package ships types
+│       ├── seeding.py          # deterministic seeding foundations
+│       ├── catalog.py          # registries of built-in strategies/benchmarks/...
+│       ├── cli.py              # the `context-lab` command-line interface
+│       ├── compositions.py     # built-in strategy compositions (Phase 7)
+│       ├── core/               # items, budgets, contexts, tasks, interfaces, runner, metrics
+│       ├── strategies/         # selection/temporal strategies (positional, recency, ...)
+│       ├── compression/        # extractive compressors (Phase 3)
+│       ├── retention/          # retention policies (Phase 5)
+│       ├── attention/          # attention allocators (Phase 6)
+│       ├── benchmarks/         # synthetic + naturalistic benchmark families and presets
+│       │   └── naturalistic/   # naturalistic benchmark engine and families (Phase 8)
+│       ├── experiments/        # declarative experiment definitions (phase2 … phase10)
+│       ├── synthesis/          # cross-benchmark synthesis (Phase 9)
+│       ├── perturbations/      # robustness perturbations (Phase 10)
+│       └── reporting/          # result persistence and per-phase Markdown reports
+├── tests/                      # one test module per source module, plus shared fixtures
+├── .github/workflows/          # continuous integration (ci.yml)
+├── pyproject.toml              # single source of truth for build + tooling config
+├── README.md                  # front door and document index
+├── CHANGELOG.md                # human-readable history
+├── CONTRIBUTING.md             # how to propose and add work
+├── CODE_OF_CONDUCT.md          # community expectations
 └── LICENSE
 ```
 
-## Intended tree (later phases)
-
-The structure below is the target the design is built toward. It is documented
-here, not scaffolded, in keeping with the phased plan in
-[roadmap.md](roadmap.md).
-
-```
-src/context_engineering_lab/
-├── core/          # items, stores, budgets, the experiment protocol, harness
-├── strategies/    # salience, selection, compression, temporal, forgetting, ...
-├── benchmarks/    # tasks, generators, datasets, scoring
-├── metrics/       # quality, cost, robustness measures and aggregation
-└── reporting/     # tables, curves, result serialization
-
-experiments/       # declarative experiment definitions (one per question)
-results/           # generated, git-ignored experiment outputs
-```
+Generated experiment outputs (`artifacts/`, `results/`, `runs/`) are git-ignored;
+a result is reproduced by rerunning a definition, not by committing a blob.
 
 ## Conventions
 
@@ -50,19 +47,29 @@ results/           # generated, git-ignored experiment outputs
 installed package, not the working directory. This catches packaging mistakes
 (missing modules, absent `py.typed`) that a flat layout would hide.
 
-**Tests mirror sources.** `tests/test_<module>.py` corresponds to
-`src/context_engineering_lab/<module>.py`. This keeps coverage legible and makes
-the missing-test gap obvious.
+**Metrics live beside the abstractions they score.** Rather than a single
+`metrics/` package, each metric module sits in `core/` next to the concern it
+measures (`metrics.py`, `compression_metrics.py`, `temporal_metrics.py`,
+`retention_metrics.py`, `attention_metrics.py`, `interaction_metrics.py`,
+`naturalistic_metrics.py`, `robustness_metrics.py`). They are pure functions with
+no benchmark or strategy dependencies.
+
+**One package per primitive family.** Strategies, compressors, retention policies,
+and attention allocators each get their own package with a small `_common.py` for
+shared helpers and one module per implementation, registered explicitly in
+`catalog.py` (no plugin discovery or import-time side effects).
+
+**Experiments are data, results are derived.** Experiment *definitions* live in
+`experiments/` and are version-controlled and reviewable; experiment *outputs* are
+generated artifacts and are git-ignored.
+
+**Tests mirror sources.** `tests/test_<module>.py` corresponds to a source module.
+This keeps coverage legible and makes the missing-test gap obvious.
 
 **One config file.** `pyproject.toml` is the single source of truth for build
 metadata and every tool (Ruff, MyPy, pytest, coverage). No scattered `.cfg` or
 `.ini` files.
 
-**Experiments are data, results are derived.** Experiment *definitions* are
-version-controlled and reviewable; experiment *outputs* are generated artifacts
-and are git-ignored. A result is reproduced by rerunning a definition, not by
-committing a blob.
-
 **Docs are part of the product.** Because the experiments are the product, their
-framing — thesis, taxonomy, metrics — is treated as first-class and lives in
-`docs/`, reviewed with the same care as code.
+framing — thesis, taxonomy, metrics, per-phase summaries — is treated as
+first-class and lives in `docs/`, reviewed with the same care as code.
