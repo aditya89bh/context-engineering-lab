@@ -165,8 +165,21 @@ Implementation phases follow the [roadmap](docs/roadmap.md).
 | [Phase 9 summary](docs/phase-9-summary.md) | The cross-benchmark synthesis and what it does not claim |
 | [Robustness benchmarks](docs/robustness-benchmarks.md) | The Phase 10 perturbations, robustness metrics, and limitations |
 | [Phase 10 summary](docs/phase-10-summary.md) | The robustness experiments and what they do not claim |
+| [Reproducibility](docs/reproducibility.md) | The determinism guarantee and how to reproduce results |
+| [Project summary](docs/project-summary.md) | One-page overview by the numbers and by phase |
+| [Repository tour](docs/repository-tour.md) | A guided walk for new contributors |
+| [Release checklist](docs/release-checklist.md) | The procedure for cutting a release |
 | [Roadmap](docs/roadmap.md) | Phase plan and current status |
 | [ADRs](docs/adr/) | Architecture decision records |
+
+### Publication documents
+
+| Document | Purpose |
+| --- | --- |
+| [RESULTS.md](RESULTS.md) | Measured benchmark evidence (numbers only) |
+| [FINDINGS.md](FINDINGS.md) | Interpretation of the evidence, benchmark-specific |
+| [LIMITATIONS.md](LIMITATIONS.md) | What the evidence does not show |
+| [FUTURE_WORK.md](FUTURE_WORK.md) | Open questions and research directions |
 
 ## Benchmark map
 
