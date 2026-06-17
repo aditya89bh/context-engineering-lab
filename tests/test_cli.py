@@ -303,3 +303,34 @@ def test_run_phase9_is_reproducible(tmp_path: Path) -> None:
     assert (first / "synthesis.md").read_text(encoding="utf-8") == (
         second / "synthesis.md"
     ).read_text(encoding="utf-8")
+
+
+def test_run_phase10_writes_artifacts_and_report(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    output = tmp_path / "phase10"
+    exit_code = main(["run-phase10", "--output", str(output)])
+    captured = capsys.readouterr()
+
+    assert exit_code == 0
+    assert "run_id=" in captured.out
+    report = output / "robustness.md"
+    assert report.exists()
+    assert "Phase 10 robustness report" in report.read_text(encoding="utf-8")
+    for name in (
+        "distractor-stress-baseline",
+        "distractor-stress-distractor-injection",
+    ):
+        artifact = output / f"{name}.json"
+        assert artifact.exists()
+        assert read_result(artifact).results
+
+
+def test_run_phase10_is_reproducible(tmp_path: Path) -> None:
+    first = tmp_path / "one"
+    second = tmp_path / "two"
+    main(["run-phase10", "--output", str(first)])
+    main(["run-phase10", "--output", str(second)])
+    assert (first / "robustness.md").read_text(encoding="utf-8") == (
+        second / "robustness.md"
+    ).read_text(encoding="utf-8")
